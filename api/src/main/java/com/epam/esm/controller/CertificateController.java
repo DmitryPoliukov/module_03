@@ -1,7 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.repository.dto.CertificateDto;
-import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController

@@ -59,6 +59,24 @@ public class CertificateDaoImpl implements CertificateDao, AbstractCRDRepository
     private static final String SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID =
             "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = ?";
 
+    // pagination criteria
+    /*
+
+    Наконец, давайте посмотрим на более гибкое решение - используя критерии:
+
+Criteria criteria = session.createCriteria(Foo.class);
+criteria.setFirstResult(0);
+criteria.setMaxResults(pageSize);
+List<Foo> firstPage = criteria.list();
+API запросов Hibernate Criteria упрощает получение общего количества с помощью объекта Projection :
+
+Criteria criteriaCount = session.createCriteria(Foo.class);
+criteriaCount.setProjection(Projections.rowCount());
+Long count = (Long) criteriaCount.uniqueResult();
+     */
+
+
+
     @Override
     public Certificate create(Certificate certificate) {
         if (certificate == null) {
@@ -82,14 +100,14 @@ public class CertificateDaoImpl implements CertificateDao, AbstractCRDRepository
             (rs, rowNum) -> {
                 Certificate certificate = new Certificate();
                 certificate.setId(rs.getInt(1));
-                certificate.setName(rs.getString(2));
+                certificate.setName(rs.getString(6));
                 certificate.setDescription(rs.getString(3));
-                Double price = rs.getDouble(4);
+                Double price = rs.getDouble(7);
                 certificate.setPrice(price);
-                Integer duration = rs.getInt(5);
+                Integer duration = rs.getInt(4);
                 certificate.setDuration(duration);
-                certificate.setCreateDate(rs.getObject(6, LocalDateTime.class));
-                certificate.setLastUpdateDate(rs.getObject(7, LocalDateTime.class));
+                certificate.setCreateDate(rs.getObject(2, LocalDateTime.class));
+                certificate.setLastUpdateDate(rs.getObject(5, LocalDateTime.class));
                 return certificate;
             };
 

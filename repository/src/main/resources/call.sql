@@ -1,1 +1,1 @@
-call findProcedure(null,  null, null, null);
+call findProcedure('tag1',  'ce', 'name', null);
