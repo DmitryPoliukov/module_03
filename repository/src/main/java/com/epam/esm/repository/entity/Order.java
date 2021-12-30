@@ -1,10 +1,7 @@
 package com.epam.esm.repository.entity;
 
-import org.hibernate.annotations.Formula;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -21,12 +18,12 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    private List<Certificate> certificates;
+    @ManyToOne
+    @JoinColumn(name = "certificate_id")
+    private Certificate certificate;
 
-    @Formula(
-            "( Select SUM(gift_certificate.price) FROM gift_certificate WHERE gift_certificate.order_id=id)")
-    private double price;
+    @Column(name = "cost")
+    private double cost;
 
     public Order() {}
 
@@ -54,21 +51,63 @@ public class Order {
         this.user = user;
     }
 
-    public List<Certificate> getCertificates() {
-        return certificates;
+    public double getCost() {
+        return cost;
     }
 
-    public void setCertificates(List<Certificate> certificates) {
-        this.certificates = certificates;
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
-    public double getPrice() {
-        return price;
+    public Certificate getCertificate() {
+        return certificate;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (id != order.id) return false;
+        if (createDate != null ? !createDate.equals(order.createDate) : order.createDate != null)
+            return false;
+        if (user != null ? !user.equals(order.user) : order.user != null) return false;
+        if (cost != order.cost) return false;
+
+        return certificate != null
+                ? certificate.equals(order.certificate)
+                : order.certificate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        int prime = 31;
+        result = prime * result + id;
+        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (certificate != null ? certificate.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Order{");
+        sb.append("id=").append(id);
+        sb.append(", createDate=").append(createDate);
+        sb.append(", user=").append(user);
+        sb.append(", certificate=").append(certificate);
+        sb.append('}');
+        return sb.toString();
+    }
+
+
 
 
 }

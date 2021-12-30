@@ -35,9 +35,9 @@ public class Certificate {
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private List<Tag> tags;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate")
+    private List<Order> orders;
 
     public Certificate() {
     }
