@@ -4,14 +4,14 @@ package com.epam.esm.repository.dao;
 import java.util.List;
 import java.util.Optional;
 
-public interface AbstractCRDRepository<T> {
+public abstract class AbstractCRDRepository<T> {
 
-    T create(T t);
+    abstract T create(T t);
 
-    Optional<T> read(int id);
+    abstract Optional<T> read(int id);
 
-    List<T> readAll();
+    abstract List<T> readAll();
 
-    int delete(int id);
+    abstract int delete(int id);
 
 }
