@@ -2,11 +2,12 @@ package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.User;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Collections;
 import java.util.List;
 
-public class UserDto {
+public class UserDto extends RepresentationModel<UserDto> {
 
     private int id;
     private String name;

@@ -2,6 +2,7 @@ package com.epam.esm.repository.entity;
 
 import javax.validation.constraints.Positive;
 
+
 public class PaginationParameter {
 
     @Positive private int page;

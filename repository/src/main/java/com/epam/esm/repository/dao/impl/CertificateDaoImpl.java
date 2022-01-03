@@ -1,6 +1,5 @@
 package com.epam.esm.repository.dao.impl;
 
-import com.epam.esm.repository.dao.AbstractCRDRepository;
 import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
@@ -23,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class CertificateDaoImpl implements CertificateDao, AbstractCRDRepository<Certificate> {
+public class CertificateDaoImpl implements CertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
 

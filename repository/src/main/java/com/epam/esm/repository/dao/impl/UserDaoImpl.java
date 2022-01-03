@@ -2,11 +2,12 @@ package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.dao.UserDao;
-import com.epam.esm.repository.entity.PageData;
 import com.epam.esm.repository.entity.PaginationParameter;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.exception.TagException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -17,6 +18,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class UserDaoImpl implements UserDao {
 
     private static final String SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS =
@@ -39,6 +41,7 @@ public class UserDaoImpl implements UserDao {
     private final PaginationHandler paginationHandler;
     private final EntityManager entityManager;
 
+    @Autowired
     public UserDaoImpl(PaginationHandler paginationHandler, EntityManager entityManager) {
         this.paginationHandler = paginationHandler;
         this.entityManager = entityManager;
@@ -51,12 +54,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Optional<User> read(int id) {
+        return Optional.ofNullable(entityManager.find(User.class, id));
+    }
+
+
+    @Override
     public Optional<User> readWithoutOrders(int id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
 
     @Override
-    public PageData<User> readAll(PaginationParameter parameter) {
+    public List<User> readAll(PaginationParameter parameter) {
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
@@ -66,16 +75,17 @@ public class UserDaoImpl implements UserDao {
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         countQuery.select(builder.count(countQuery.from(User.class)));
         int numberOfElements = entityManager.createQuery(countQuery).getSingleResult().intValue();
+
         int numberOfPages =
                 paginationHandler.calculateNumberOfPages(numberOfElements, parameter.getSize());
 
         TypedQuery<User> typedQuery = entityManager.createQuery(select);
         paginationHandler.setPageToQuery(typedQuery, parameter);
-        List<User> users = typedQuery.getResultList();
+        return typedQuery.getResultList();
 
-        return new PageData<>(parameter.getPage(), numberOfElements, numberOfPages, users);
     }
 
+    @Override
     public Tag takeMostWidelyTagFromUserWithHighestCostOrders() {
         Query q = entityManager.createNativeQuery(
                         SQL_REQUEST_FOR_WIDELY_USED_TAG_FROM_HIGHEST_COST_ORDERS_USER);

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TagDaoImpl implements TagDao, AbstractCRDRepository<Tag> {
+public class TagDaoImpl implements TagDao {
 
     private final JdbcTemplate jdbcTemplate;
 

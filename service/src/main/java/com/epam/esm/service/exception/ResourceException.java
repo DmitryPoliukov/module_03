@@ -29,6 +29,17 @@ public class ResourceException extends RuntimeException {
         return () -> new ResourceValidationException(message, id);
     }
 
+    public static Supplier<ResourceException> notFoundWithUser(int id) {
+        String message = String.format("There is no user with id = %s", id);
+        return () -> new ResourceNotFoundException(message, id);
+    }
+
+    public static Supplier<ResourceException> validationWithUser(int id) {
+        String message = String.format("There is no user with id = %s", id);
+        return () -> new ResourceValidationException(message, id);
+    }
+
+
     public ResourceException(String message, int resourceId) {
         super(message);
         this.resourceId = resourceId;
