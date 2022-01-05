@@ -2,19 +2,19 @@ package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.Order;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
-@JsonIgnoreProperties({ "userDto" })
 public class OrderDto {
 
     private int id;
     private LocalDateTime createDate;
 
-    @JsonBackReference
+    @JsonIgnore
     private UserDto userDto;
 
-    @JsonBackReference
+
     private CertificateDto certificateDto;
 
     private double cost;

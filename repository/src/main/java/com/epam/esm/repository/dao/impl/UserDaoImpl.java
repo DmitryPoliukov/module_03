@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> read(int id) {
-        User user =  Optional.ofNullable(entityManager.find(User.class, id)).get();
+      //  User user =  Optional.ofNullable(entityManager.find(User.class, id)).get();
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
 

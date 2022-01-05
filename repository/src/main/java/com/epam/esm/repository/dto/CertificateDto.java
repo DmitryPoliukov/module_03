@@ -3,6 +3,7 @@ package com.epam.esm.repository.dto;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -35,7 +36,7 @@ public class CertificateDto {
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
 
-    @JsonManagedReference
+    @JsonIgnore
     private List<OrderDto> orders;
 
     public CertificateDto() {

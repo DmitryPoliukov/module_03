@@ -1,17 +1,12 @@
 package com.epam.esm.repository.entity;
 
-import com.epam.esm.repository.dto.CertificateDto;
 import com.epam.esm.repository.dto.OrderDto;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
-@JsonIgnoreProperties({ "user" })
 public class Order {
 
     @Id
@@ -23,12 +18,10 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "certificate_id")
-    @JsonManagedReference
     private Certificate certificate;
 
     @Column(name = "cost")
@@ -80,7 +73,7 @@ public class Order {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(this.id);
         orderDto.setCreateDate(this.createDate);
-        orderDto.setUserDto(this.user.toDto());
+       // orderDto.setUserDto(this.user.toDto());
         orderDto.setCertificateDto(this.certificate.toDto());
         orderDto.setCost(this.cost);
         return orderDto;

@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "gift_certificate")
-@JsonIgnoreProperties({ "orders" })
 public class Certificate {
 
     @Id
@@ -40,7 +39,6 @@ public class Certificate {
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate")
-    @JsonBackReference
     private List<Order> orders;
 
     public Certificate() {

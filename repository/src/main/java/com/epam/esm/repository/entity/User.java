@@ -2,9 +2,11 @@ package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.OrderDto;
 import com.epam.esm.repository.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +27,7 @@ public class User {
             mappedBy = "user",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.ALL})
-    @JsonManagedReference
-    private List<Order> orders = Collections.emptyList();
+    private List<Order> orders = new ArrayList();
 
     public User() {
     }
