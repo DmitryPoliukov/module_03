@@ -1,6 +1,9 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.CertificateDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "gift_certificate")
-
+@JsonIgnoreProperties({ "orders" })
 public class Certificate {
 
     @Id
@@ -37,6 +40,7 @@ public class Certificate {
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate")
+    @JsonBackReference
     private List<Order> orders;
 
     public Certificate() {
@@ -96,6 +100,14 @@ public class Certificate {
         certificateDto.setLastUpdateDate(this.lastUpdateDate);
         certificateDto.setTags(this.tags);
         return certificateDto;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     public void setPrice(Double price) {

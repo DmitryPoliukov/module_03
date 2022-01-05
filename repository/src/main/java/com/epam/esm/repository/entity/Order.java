@@ -1,10 +1,17 @@
 package com.epam.esm.repository.entity;
 
+import com.epam.esm.repository.dto.CertificateDto;
+import com.epam.esm.repository.dto.OrderDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties({ "user" })
 public class Order {
 
     @Id
@@ -16,10 +23,12 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "certificate_id")
+    @JsonManagedReference
     private Certificate certificate;
 
     @Column(name = "cost")
@@ -67,6 +76,16 @@ public class Order {
         this.certificate = certificate;
     }
 
+    public OrderDto toDto() {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(this.id);
+        orderDto.setCreateDate(this.createDate);
+        orderDto.setUserDto(this.user.toDto());
+        orderDto.setCertificateDto(this.certificate.toDto());
+        orderDto.setCost(this.cost);
+        return orderDto;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,7 +110,7 @@ public class Order {
         int prime = 31;
         result = prime * result + id;
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
+        //result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (certificate != null ? certificate.hashCode() : 0);
         return result;
     }
@@ -101,7 +120,6 @@ public class Order {
         final StringBuilder sb = new StringBuilder("Order{");
         sb.append("id=").append(id);
         sb.append(", createDate=").append(createDate);
-        sb.append(", user=").append(user);
         sb.append(", certificate=").append(certificate);
         sb.append('}');
         return sb.toString();

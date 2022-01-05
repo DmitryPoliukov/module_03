@@ -1,10 +1,13 @@
 package com.epam.esm.repository.entity;
 
+import com.epam.esm.repository.dto.OrderDto;
 import com.epam.esm.repository.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -22,11 +25,17 @@ public class User {
             mappedBy = "user",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.ALL})
+    @JsonManagedReference
     private List<Order> orders = Collections.emptyList();
 
-
-
     public User() {
+    }
+
+    public User(int id, String name, String surname, List<Order> orders) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.orders = orders;
     }
 
     public UserDto toDto() {
@@ -34,7 +43,10 @@ public class User {
         userDto.setId(this.id);
         userDto.setName(this.name);
         userDto.setSurname(this.surname);
-        userDto.setOrders(this.orders);
+        userDto.setOrdersDto(this.orders.stream()
+                .map(Order::toDto)
+                .collect(Collectors.toList()));
+
         return userDto;
     }
 

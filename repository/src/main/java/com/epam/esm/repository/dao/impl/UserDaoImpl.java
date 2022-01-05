@@ -2,6 +2,7 @@ package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.dao.UserDao;
+import com.epam.esm.repository.dto.UserDto;
 import com.epam.esm.repository.entity.PaginationParameter;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.entity.User;
@@ -55,12 +56,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> read(int id) {
-        return Optional.ofNullable(entityManager.find(User.class, id));
-    }
-
-
-    @Override
-    public Optional<User> readWithoutOrders(int id) {
+        User user =  Optional.ofNullable(entityManager.find(User.class, id)).get();
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
 

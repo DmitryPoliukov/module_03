@@ -1,28 +1,32 @@
 package com.epam.esm.repository.dto;
 
-import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Order;
-import com.epam.esm.repository.entity.Tag;
-import com.epam.esm.repository.entity.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
-
+@JsonIgnoreProperties({ "userDto" })
 public class OrderDto {
 
     private int id;
     private LocalDateTime createDate;
-    private User user;
-    private Certificate certificate;
+
+    @JsonBackReference
+    private UserDto userDto;
+
+    @JsonBackReference
+    private CertificateDto certificateDto;
+
     private double cost;
 
     public OrderDto() {
     }
 
-    public OrderDto(int id, LocalDateTime createDate, User user, Certificate certificate, double cost) {
+    public OrderDto(int id, LocalDateTime createDate, UserDto userDto, CertificateDto certificateDto, double cost) {
         this.id = id;
         this.createDate = createDate;
-        this.user = user;
-        this.certificate = certificate;
+        this.userDto = userDto;
+        this.certificateDto = certificateDto;
         this.cost = cost;
     }
 
@@ -30,8 +34,8 @@ public class OrderDto {
         Order entityOrder = new Order();
         entityOrder.setId(this.id);
         entityOrder.setCreateDate(this.getCreateDate());
-        entityOrder.setUser(this.getUser());
-        entityOrder.setCertificate(this.getCertificate());
+        entityOrder.setUser(this.getUserDto().toEntity());
+        entityOrder.setCertificate(this.getCertificateDto().toEntity());
         entityOrder.setCost(this.getCost());
         return entityOrder;
     }
@@ -52,20 +56,22 @@ public class OrderDto {
         this.createDate = createDate;
     }
 
-    public User getUser() {
-        return user;
+    public UserDto getUserDto() {
+        return userDto;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserDto(UserDto userDto) {
+        this.userDto = userDto;
     }
 
-    public Certificate getCertificate() {
-        return certificate;
+
+
+    public CertificateDto getCertificateDto() {
+        return certificateDto;
     }
 
-    public void setCertificate(Certificate certificate) {
-        this.certificate = certificate;
+    public void setCertificateDto(CertificateDto certificateDto) {
+        this.certificateDto = certificateDto;
     }
 
     public double getCost() {
@@ -86,12 +92,12 @@ public class OrderDto {
         if (id != orderDto.id) return false;
         if (createDate != null ? !createDate.equals(orderDto.createDate) : orderDto.createDate != null)
             return false;
-        if (user != null ? !user.equals(orderDto.user) : orderDto.user != null) return false;
+        if (userDto != null ? !userDto.equals(orderDto.userDto) : orderDto.userDto != null) return false;
         if (cost != orderDto.cost) return false;
 
-        return certificate != null
-                ? certificate.equals(orderDto.certificate)
-                : orderDto.certificate == null;
+        return certificateDto != null
+                ? certificateDto.equals(orderDto.certificateDto)
+                : orderDto.certificateDto == null;
     }
 
     @Override
@@ -100,8 +106,8 @@ public class OrderDto {
         int prime = 31;
         result = prime * result + id;
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (certificate != null ? certificate.hashCode() : 0);
+      //  result = 31 * result + (userDto != null ? userDto.hashCode() : 0);
+        result = 31 * result + (certificateDto != null ? certificateDto.hashCode() : 0);
         return result;
     }
 
@@ -110,8 +116,7 @@ public class OrderDto {
         final StringBuilder sb = new StringBuilder("Order{");
         sb.append("id=").append(id);
         sb.append(", createDate=").append(createDate);
-        sb.append(", user=").append(user);
-        sb.append(", certificate=").append(certificate);
+        sb.append(", certificate=").append(certificateDto);
         sb.append('}');
         return sb.toString();
     }

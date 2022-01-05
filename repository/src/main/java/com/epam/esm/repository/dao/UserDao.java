@@ -13,8 +13,6 @@ public interface UserDao {
 
     Optional<User> read(int id);
 
-    Optional<User> readWithoutOrders(int id);
-
     List<User> readAll(PaginationParameter parameter);
 
     Tag takeMostWidelyTagFromUserWithHighestCostOrders();

@@ -3,15 +3,16 @@ package com.epam.esm.repository.dto;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-
-
+@JsonIgnoreProperties({ "orders" })
 public class CertificateDto {
 
     private Integer id;
@@ -33,6 +34,9 @@ public class CertificateDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
+
+    @JsonManagedReference
+    private List<OrderDto> orders;
 
     public CertificateDto() {
     }
@@ -101,6 +105,14 @@ public class CertificateDto {
         this.tags = tags;
     }
 
+    public List<OrderDto> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderDto> orders) {
+        this.orders = orders;
+    }
+
     public Certificate toEntity() {
         Certificate entity = new Certificate();
         entity.setId(this.id);
@@ -111,6 +123,9 @@ public class CertificateDto {
         entity.setCreateDate(this.createDate);
         entity.setLastUpdateDate(this.lastUpdateDate);
         entity.setTags(this.tags);
+        entity.setOrders(this.orders.stream()
+                .map(OrderDto::toEntity)
+                .collect(Collectors.toList()));
         return entity;
     }
 

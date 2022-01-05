@@ -27,7 +27,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDto read(@PathVariable int id) {
         UserDto userDto = userService.read(id);
-        hateoasAdder.addLinks(userDto);
+ //      hateoasAdder.addLinks(userDto);
         return userDto;
     }
 }
