@@ -12,5 +12,5 @@ public interface UserService {
 
     List<UserDto> readAll(int page, int size);
 
-    TagDto takeMostWidelyTagFromUserWithHighestCostOrders();
+    TagDto readMostWidelyTagFromUserWithHighestCostOrders();
 }

@@ -85,7 +85,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Tag takeMostWidelyTagFromUserWithHighestCostOrders() {
+    public Tag readMostWidelyTagFromUserWithHighestCostOrders() {
         Query q = entityManager.createNativeQuery(
                         SQL_REQUEST_FOR_WIDELY_USED_TAG_FROM_HIGHEST_COST_ORDERS_USER);
 

@@ -59,7 +59,8 @@ public class CertificateController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCertificate(@PathVariable int id) {
+    public ResponseEntity<Void> deleteCertificate(@PathVariable int id) {
         certificateService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

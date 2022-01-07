@@ -15,7 +15,7 @@ public interface UserDao {
 
     List<User> readAll(int page, int size);
 
-    Tag takeMostWidelyTagFromUserWithHighestCostOrders();
+    Tag readMostWidelyTagFromUserWithHighestCostOrders();
 
 
 

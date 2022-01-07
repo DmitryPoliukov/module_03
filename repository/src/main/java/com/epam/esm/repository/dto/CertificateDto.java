@@ -1,11 +1,10 @@
 package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.Certificate;
-import com.epam.esm.repository.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonIgnoreProperties({ "orders" })
-public class CertificateDto {
+public class CertificateDto extends RepresentationModel<CertificateDto> {
 
     private Integer id;
 
