@@ -9,11 +9,9 @@ import javax.persistence.TypedQuery;
 @Component
 public class PaginationHandlerImpl implements PaginationHandler {
     @Override
-    public void setPageToQuery(TypedQuery<?> typedQuery, PaginationParameter parameter) {
-        int page = parameter.getPage();
-        int pageSize = parameter.getSize();
-        typedQuery.setFirstResult((page - 1) * pageSize);
-        typedQuery.setMaxResults(pageSize);
+    public void setPageToQuery(TypedQuery<?> typedQuery, int page, int size) {
+        typedQuery.setFirstResult((page - 1) * size);
+        typedQuery.setMaxResults(size);
     }
 
     @Override

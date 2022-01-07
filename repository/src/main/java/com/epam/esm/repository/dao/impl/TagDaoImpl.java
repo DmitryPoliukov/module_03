@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional(propagation = Propagation.REQUIRED)
 public class TagDaoImpl implements TagDao {
 
     private final JdbcTemplate jdbcTemplate;

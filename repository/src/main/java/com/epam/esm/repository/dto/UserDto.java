@@ -1,12 +1,9 @@
 package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,7 +80,7 @@ public class UserDto extends RepresentationModel<UserDto> {
         int prime = 31;
         result = prime * result + id;
         result = prime * result + (name != null ? name.hashCode() : 0);
-        //result = prime * result + (surname != null ? surname.hashCode() : 0);
+        result = prime * result + (surname != null ? surname.hashCode() : 0);
         result = prime * result + (ordersDto != null ? ordersDto.hashCode() : 0);
         return result;
     }
@@ -94,7 +91,7 @@ public class UserDto extends RepresentationModel<UserDto> {
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", surname='").append(surname).append('\'');
-       // sb.append(", orders=").append(ordersDto);
+        sb.append(", orders=").append(ordersDto);
         sb.append('}');
         return sb.toString();
     }

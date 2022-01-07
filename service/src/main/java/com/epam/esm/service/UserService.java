@@ -10,7 +10,7 @@ public interface UserService {
 
     UserDto read(int id);
 
-    List<UserDto> readAll(PaginationParameter parameter);
+    List<UserDto> readAll(int page, int size);
 
     TagDto takeMostWidelyTagFromUserWithHighestCostOrders();
 }

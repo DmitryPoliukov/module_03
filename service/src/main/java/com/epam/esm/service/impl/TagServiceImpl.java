@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class TagServiceImpl implements TagService {
 
     public static final int ONE_UPDATED_ROW = 1;

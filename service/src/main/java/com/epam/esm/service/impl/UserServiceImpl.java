@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
@@ -34,8 +34,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> readAll(PaginationParameter parameter) {
-        List<User> users = userDao.readAll(parameter);
+    public List<UserDto> readAll(int page, int size) {
+        List<User> users = userDao.readAll(page, size);
         return users.stream()
                 .map(User::toDto)
                 .collect(Collectors.toList());

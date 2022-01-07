@@ -1,6 +1,7 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.CertificateDto;
+import com.epam.esm.repository.dto.TagDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "gift_certificate")
@@ -96,7 +98,15 @@ public class Certificate {
         certificateDto.setDuration(this.duration);
         certificateDto.setCreateDate(this.createDate);
         certificateDto.setLastUpdateDate(this.lastUpdateDate);
-        certificateDto.setTags(this.tags);
+        certificateDto.setTagsDto(this.tags.stream()
+                .map(Tag::toDto)
+                .collect(Collectors.toList()));
+
+        /*certificateDto.setOrders(this.orders.stream()
+                .map(Order::toDto)
+                .collect(Collectors.toList()));
+
+         */
         return certificateDto;
     }
 

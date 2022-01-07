@@ -9,6 +9,8 @@ import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.exception.TagException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
+
 public class UserDaoImpl implements UserDao {
 
     private static final String SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS =
@@ -56,12 +60,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> read(int id) {
-      //  User user =  Optional.ofNullable(entityManager.find(User.class, id)).get();
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
 
     @Override
-    public List<User> readAll(PaginationParameter parameter) {
+    public List<User> readAll(int page, int size) {
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
@@ -73,10 +76,10 @@ public class UserDaoImpl implements UserDao {
         int numberOfElements = entityManager.createQuery(countQuery).getSingleResult().intValue();
 
         int numberOfPages =
-                paginationHandler.calculateNumberOfPages(numberOfElements, parameter.getSize());
+                paginationHandler.calculateNumberOfPages(numberOfElements, size);
 
         TypedQuery<User> typedQuery = entityManager.createQuery(select);
-        paginationHandler.setPageToQuery(typedQuery, parameter);
+        paginationHandler.setPageToQuery(typedQuery, page, size);
         return typedQuery.getResultList();
 
     }

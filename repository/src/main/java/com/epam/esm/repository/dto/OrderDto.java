@@ -1,9 +1,7 @@
 package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.Order;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 public class OrderDto {
@@ -13,7 +11,6 @@ public class OrderDto {
 
     @JsonIgnore
     private UserDto userDto;
-
 
     private CertificateDto certificateDto;
 

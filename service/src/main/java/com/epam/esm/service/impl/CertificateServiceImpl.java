@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.TagDao;
 import com.epam.esm.repository.dto.CertificateDto;
+import com.epam.esm.repository.dto.TagDto;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.CertificateService;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import static java.time.LocalDateTime.now;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CertificateServiceImpl implements CertificateService {
 
     public static final int ONE_UPDATED_ROW = 1;
@@ -43,7 +45,9 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDto.setCreateDate(timeNow);
         certificateDto.setLastUpdateDate(timeNow);
         Certificate createdCertificate = certificateDao.create(certificateDto.toEntity());
-        createdCertificate.setTags(certificateDto.getTags());
+        createdCertificate.setTags(certificateDto.getTagsDto().stream()
+                .map(TagDto::toEntity)
+                .collect(Collectors.toList()));
         addTagsToDb(createdCertificate);
         return createdCertificate.toDto();
     }
@@ -73,7 +77,9 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDto.setId(id);
         CertificateDto actualCertificateDto = fillingFields(certificateDto);
         actualCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        List<Tag> requestTags = actualCertificateDto.getTags();
+        List<Tag> requestTags = actualCertificateDto.getTagsDto().stream()
+                .map(TagDto::toEntity)
+                .collect(Collectors.toList());
         List<Tag> createdTags = tagDao.readAll();
         saveNewTags(requestTags, createdTags);
         certificateDao.update(certificateDto.toEntity());
@@ -95,8 +101,8 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateDto.getPrice() == null) {
             certificateDto.setPrice(oldCertificate.getPrice());
         }
-        if (certificateDto.getTags() == null) {
-            certificateDto.setTags(oldCertificate.getTags());
+        if (certificateDto.getTagsDto() == null) {
+            certificateDto.setTagsDto(oldCertificate.getTagsDto());
         }
             certificateDto.setCreateDate(oldCertificate.getCreateDate());
 

@@ -34,7 +34,7 @@ public class CertificateDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
     private LocalDateTime lastUpdateDate;
-    private List<Tag> tags;
+    private List<TagDto> tagsDto;
 
     @JsonIgnore
     private List<OrderDto> orders;
@@ -98,12 +98,12 @@ public class CertificateDto {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<TagDto> getTagsDto() {
+        return tagsDto;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setTagsDto(List<TagDto> tagsDto) {
+        this.tagsDto = tagsDto;
     }
 
     public List<OrderDto> getOrders() {
@@ -123,10 +123,15 @@ public class CertificateDto {
         entity.setDuration(this.duration);
         entity.setCreateDate(this.createDate);
         entity.setLastUpdateDate(this.lastUpdateDate);
-        entity.setTags(this.tags);
+        entity.setTags(this.tagsDto.stream()
+                .map(TagDto::toEntity)
+                .collect(Collectors.toList()));
+        /*
         entity.setOrders(this.orders.stream()
                 .map(OrderDto::toEntity)
                 .collect(Collectors.toList()));
+
+         */
         return entity;
     }
 
@@ -140,7 +145,7 @@ public class CertificateDto {
         sb.append(", duration=").append(duration);
         sb.append(", createDate=").append(createDate);
         sb.append(", lastUpdateDate=").append(lastUpdateDate);
-        sb.append(", tags=").append(tags);
+        sb.append(", tags=").append(tagsDto);
         sb.append('}');
         return sb.toString();
     }
@@ -161,7 +166,7 @@ public class CertificateDto {
         if (lastUpdateDate != null
                 ? !lastUpdateDate.equals(that.lastUpdateDate)
                 : that.lastUpdateDate != null) return false;
-        return tags != null ? tags.equals(that.tags) : that.tags == null;
+        return tagsDto != null ? tagsDto.equals(that.tagsDto) : that.tagsDto == null;
     }
 
     @Override
@@ -174,7 +179,7 @@ public class CertificateDto {
         result = prime * result + (duration != null ? duration.hashCode() : 0);
         result = prime * result + (createDate != null ? createDate.hashCode() : 0);
         result = prime * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
-        result = prime * result + (tags != null ? tags.hashCode() : 0);
+        result = prime * result + (tagsDto != null ? tagsDto.hashCode() : 0);
         return result;
     }
 

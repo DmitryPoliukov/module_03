@@ -23,7 +23,7 @@ public class CertificateDtoValidator {
         validateDescription(certificateDto.getDescription());
         validatePrice(certificateDto.getPrice());
         validateDuration(certificateDto.getDuration());
-        validateListOfTags(certificateDto.getTags().stream().map(Tag::toDto).collect(toList()));
+        validateListOfTags(certificateDto.getTagsDto());
     }
 
     public static void validateListOfTags(List<TagDto> tags) throws IncorrectParameterException {

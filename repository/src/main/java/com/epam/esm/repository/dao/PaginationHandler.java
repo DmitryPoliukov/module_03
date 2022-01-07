@@ -8,7 +8,7 @@ import javax.persistence.TypedQuery;
 @Component
 public interface PaginationHandler {
 
-    void setPageToQuery(TypedQuery<?> typedQuery, PaginationParameter parameter);
+    void setPageToQuery(TypedQuery<?> typedQuery, int page, int size);
 
     int calculateNumberOfPages(int numberOfElements, int pageSize);
 }
