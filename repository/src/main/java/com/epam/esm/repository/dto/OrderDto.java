@@ -2,9 +2,10 @@ package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.Order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
-public class OrderDto {
+public class OrderDto extends RepresentationModel<OrderDto> {
 
     private int id;
     private LocalDateTime createDate;

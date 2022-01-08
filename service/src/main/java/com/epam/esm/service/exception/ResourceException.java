@@ -39,6 +39,16 @@ public class ResourceException extends RuntimeException {
         return () -> new ResourceValidationException(message, id);
     }
 
+    public static Supplier<ResourceException> notFoundWithOrder(int id) {
+        String message = String.format("There is no order with id = %s", id);
+        return () -> new ResourceNotFoundException(message, id);
+    }
+
+    public static Supplier<ResourceException> validationWithOrder(int id) {
+        String message = String.format("There is no order with id = %s", id);
+        return () -> new ResourceValidationException(message, id);
+    }
+
 
     public ResourceException(String message, int resourceId) {
         super(message);

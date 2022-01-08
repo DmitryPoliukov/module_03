@@ -1,7 +1,6 @@
 package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.PaginationHandler;
-import com.epam.esm.repository.entity.PaginationParameter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.TypedQuery;

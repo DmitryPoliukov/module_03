@@ -73,10 +73,6 @@ public class UserDaoImpl implements UserDao {
 
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         countQuery.select(builder.count(countQuery.from(User.class)));
-        int numberOfElements = entityManager.createQuery(countQuery).getSingleResult().intValue();
-
-        int numberOfPages =
-                paginationHandler.calculateNumberOfPages(numberOfElements, size);
 
         TypedQuery<User> typedQuery = entityManager.createQuery(select);
         paginationHandler.setPageToQuery(typedQuery, page, size);

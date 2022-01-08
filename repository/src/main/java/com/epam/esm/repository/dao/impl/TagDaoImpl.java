@@ -1,6 +1,5 @@
 package com.epam.esm.repository.dao.impl;
 
-import com.epam.esm.repository.dao.AbstractCRDRepository;
 import com.epam.esm.repository.dao.TagDao;
 import com.epam.esm.repository.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
