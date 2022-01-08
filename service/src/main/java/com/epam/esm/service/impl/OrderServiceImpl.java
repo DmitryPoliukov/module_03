@@ -31,7 +31,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto create(OrderDto orderDto) {
-        return null;
+        Order order = orderDto.toEntity();
+        order.setCertificate(certificateService.read(orderDto.getCertificateId()).toEntity());
+        orderDao.create(order);
+        return readOrder(order.getId());
     }
 
     @Override
@@ -42,8 +45,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto readOrderByUser(int userId, int orderId) {
-        Optional<Order> order = orderDao.readOrderByUser(userId, orderId);
+    public OrderDto readOrder(int orderId) {
+        Optional<Order> order = orderDao.readOrder(orderId);
         return order.orElseThrow(ResourceNotFoundException.notFoundWithOrder(orderId)).toDto();
     }
 }

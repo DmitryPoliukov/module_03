@@ -10,7 +10,7 @@ public interface OrderService {
 
     List<OrderDto> readAllByUserId(int userId, int page, int size);
 
-    OrderDto readOrderByUser(int userId, int orderId);
+    OrderDto readOrder(int orderId);
 
 
 }

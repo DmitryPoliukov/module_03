@@ -73,8 +73,10 @@ public class Order {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(this.id);
         orderDto.setCreateDate(this.createDate);
-       // orderDto.setUserDto(this.user.toDto());
-        orderDto.setCertificateDto(this.certificate.toDto());
+        orderDto.setUserDto(this.user.toDto());
+        orderDto.setCertificateId(this.certificate.getId());
+        orderDto.setCertificateName(this.certificate.getName());
+
         orderDto.setCost(this.cost);
         return orderDto;
     }

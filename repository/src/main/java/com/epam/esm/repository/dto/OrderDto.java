@@ -1,7 +1,8 @@
 package com.epam.esm.repository.dto;
 
+import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Order;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
@@ -9,23 +10,31 @@ public class OrderDto extends RepresentationModel<OrderDto> {
 
     private int id;
     private LocalDateTime createDate;
-
-    @JsonIgnore
+    @JsonProperty("user")
     private UserDto userDto;
 
-    private CertificateDto certificateDto;
+    private int certificateId;
+    private String certificateName;
 
     private double cost;
 
     public OrderDto() {
     }
 
-    public OrderDto(int id, LocalDateTime createDate, UserDto userDto, CertificateDto certificateDto, double cost) {
-        this.id = id;
-        this.createDate = createDate;
-        this.userDto = userDto;
-        this.certificateDto = certificateDto;
-        this.cost = cost;
+    public int getCertificateId() {
+        return certificateId;
+    }
+
+    public void setCertificateId(int certificateId) {
+        this.certificateId = certificateId;
+    }
+
+    public String getCertificateName() {
+        return certificateName;
+    }
+
+    public void setCertificateName(String certificateName) {
+        this.certificateName = certificateName;
     }
 
     public Order toEntity() {
@@ -33,7 +42,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
         entityOrder.setId(this.id);
         entityOrder.setCreateDate(this.getCreateDate());
         entityOrder.setUser(this.getUserDto().toEntity());
-        entityOrder.setCertificate(this.getCertificateDto().toEntity());
+        entityOrder.setCertificate(new Certificate(certificateId, certificateName));
         entityOrder.setCost(this.getCost());
         return entityOrder;
     }
@@ -62,16 +71,6 @@ public class OrderDto extends RepresentationModel<OrderDto> {
         this.userDto = userDto;
     }
 
-
-
-    public CertificateDto getCertificateDto() {
-        return certificateDto;
-    }
-
-    public void setCertificateDto(CertificateDto certificateDto) {
-        this.certificateDto = certificateDto;
-    }
-
     public double getCost() {
         return cost;
     }
@@ -79,7 +78,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     public void setCost(double cost) {
         this.cost = cost;
     }
-
+/*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,24 +96,26 @@ public class OrderDto extends RepresentationModel<OrderDto> {
                 ? certificateDto.equals(orderDto.certificateDto)
                 : orderDto.certificateDto == null;
     }
-
+*/
     @Override
     public int hashCode() {
         int result = 1;
         int prime = 31;
         result = prime * result + id;
-        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-      //  result = 31 * result + (userDto != null ? userDto.hashCode() : 0);
-        result = 31 * result + (certificateDto != null ? certificateDto.hashCode() : 0);
+        result = prime * result + (createDate != null ? createDate.hashCode() : 0);
+        result = 31 * result + (userDto != null ? userDto.hashCode() : 0);
+        result = prime * result + certificateId;
+        result = prime * result + (certificateName != null ? certificateName.hashCode() : 0);
         return result;
     }
+
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Order{");
         sb.append("id=").append(id);
         sb.append(", createDate=").append(createDate);
-        sb.append(", certificate=").append(certificateDto);
+        sb.append(", certificate=").append(certificateName);
         sb.append('}');
         return sb.toString();
     }

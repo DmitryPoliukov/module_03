@@ -1,11 +1,11 @@
 package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserDto extends RepresentationModel<UserDto> {
 
@@ -13,6 +13,7 @@ public class UserDto extends RepresentationModel<UserDto> {
     private String name;
     private String surname;
 
+    @JsonIgnore
     private List<OrderDto> ordersDto = new ArrayList<>();
 
     public UserDto() {}
@@ -22,9 +23,6 @@ public class UserDto extends RepresentationModel<UserDto> {
         entityUser.setId(this.id);
         entityUser.setName(this.name);
         entityUser.setSurname(this.surname);
-        entityUser.setOrders(this.ordersDto.stream()
-                .map(OrderDto::toEntity)
-                .collect(Collectors.toList()));
         return entityUser;
     }
 

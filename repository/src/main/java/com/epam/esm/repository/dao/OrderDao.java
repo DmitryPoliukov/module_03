@@ -11,5 +11,5 @@ public interface OrderDao {
 
     List<Order> readAllByUserId(int userId, int page, int size);
 
-    Optional<Order> readOrderByUser(long userId, long orderId);
+    Optional<Order> readOrder(int orderId);
 }

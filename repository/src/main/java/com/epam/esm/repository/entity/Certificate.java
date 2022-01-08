@@ -78,6 +78,11 @@ public class Certificate {
         this.duration = duration;
     }
 
+    public Certificate(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Certificate(Integer id, String name, String description, Double price, Integer duration, LocalDateTime createDate, LocalDateTime lastUpdateDate, List<Tag> tags) {
         this.id = id;
         this.name = name;

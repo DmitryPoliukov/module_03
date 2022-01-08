@@ -23,8 +23,8 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public OrderDto readOrderByUser(@PathVariable("id") int id, @RequestParam(value = "page") int userId) {
-        OrderDto order = orderService.readOrderByUser(userId, id);
+    public OrderDto readOrder(@PathVariable("id") int id) {
+        OrderDto order = orderService.readOrder(id);
         hateoasAdder.addLinks(order);
         return order;
     }

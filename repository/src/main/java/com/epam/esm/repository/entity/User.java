@@ -1,15 +1,10 @@
 package com.epam.esm.repository.entity;
 
-import com.epam.esm.repository.dto.OrderDto;
 import com.epam.esm.repository.dto.UserDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -27,7 +22,7 @@ public class User {
             mappedBy = "user",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.ALL})
-    private List<Order> orders = new ArrayList();
+    private List<Order> orders = new ArrayList<>();
 
     public User() {
     }
@@ -44,10 +39,6 @@ public class User {
         userDto.setId(this.id);
         userDto.setName(this.name);
         userDto.setSurname(this.surname);
-        userDto.setOrdersDto(this.orders.stream()
-                .map(Order::toDto)
-                .collect(Collectors.toList()));
-
         return userDto;
     }
 
@@ -104,7 +95,8 @@ public class User {
         result = prime * result + (name != null ? name.hashCode() : 0);
         result = prime * result + (surname != null ? surname.hashCode() : 0);
         result = prime * result + (orders != null ? orders.hashCode() : 0);
-        return result;    }
+        return result;
+    }
 
     @Override
     public String toString() {
