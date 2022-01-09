@@ -2,20 +2,29 @@ package com.epam.esm.repository.dto;
 
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Order;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 public class OrderDto extends RepresentationModel<OrderDto> {
 
     private int id;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
     private LocalDateTime createDate;
+
     @JsonProperty("user")
     private UserDto userDto;
 
     private int certificateId;
+
+    @Size(min = 1,max = 45, message = "Certificate name length should be from 1 to 45")
     private String certificateName;
 
+    @PositiveOrZero(message = "Order's cost should positive or zero")
     private double cost;
 
     public OrderDto() {

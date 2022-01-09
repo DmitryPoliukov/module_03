@@ -18,7 +18,6 @@ public class CertificateController {
 
     private final CertificateService certificateService;
 
-    @Autowired
     public CertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
     }

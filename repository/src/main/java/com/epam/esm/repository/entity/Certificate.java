@@ -1,10 +1,6 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.CertificateDto;
-import com.epam.esm.repository.dto.TagDto;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,7 +34,6 @@ public class Certificate {
             joinColumns = {@JoinColumn(name = "gift_certificate_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private List<Tag> tags;
-
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate")
     private List<Order> orders;
@@ -106,12 +101,6 @@ public class Certificate {
         certificateDto.setTagsDto(this.tags.stream()
                 .map(Tag::toDto)
                 .collect(Collectors.toList()));
-
-        /*certificateDto.setOrders(this.orders.stream()
-                .map(Order::toDto)
-                .collect(Collectors.toList()));
-
-         */
         return certificateDto;
     }
 

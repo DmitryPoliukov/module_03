@@ -125,12 +125,6 @@ public class CertificateDto extends RepresentationModel<CertificateDto> {
         entity.setTags(this.tagsDto.stream()
                 .map(TagDto::toEntity)
                 .collect(Collectors.toList()));
-        /*
-        entity.setOrders(this.orders.stream()
-                .map(OrderDto::toEntity)
-                .collect(Collectors.toList()));
-
-         */
         return entity;
     }
 

@@ -4,13 +4,18 @@ import com.epam.esm.repository.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDto extends RepresentationModel<UserDto> {
 
     private int id;
+
+    @Size(min = 1,max = 45, message = "User name length should be from 1 to 45")
     private String name;
+
+    @Size(min = 1,max = 45, message = "User surname length should be from 1 to 45")
     private String surname;
 
     @JsonIgnore

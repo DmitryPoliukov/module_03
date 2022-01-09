@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,8 +42,8 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> readAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                  @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
+    public List<UserDto> readAll(@RequestParam(value = "page", defaultValue = "1", required = false) @Min(1) int page,
+                                  @RequestParam(value = "size", defaultValue = "5", required = false) @Min(1) int size) {
         return userService.readAll(page, size).stream()
                 .peek(userHateoasAdder::addLinks)
                 .collect(Collectors.toList());
