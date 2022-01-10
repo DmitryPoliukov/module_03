@@ -26,9 +26,6 @@ import org.hibernate.query.Query;
 @Transactional
 public class OrderDaoImpl implements OrderDao {
 
-    private static final String FIND_BY_USER_ID_QUERY = "SELECT o FROM " + Order.class.getName()
-            + " o WHERE o.user.id = :user_id";
-
     private final EntityManager entityManager;
     private final PaginationHandler paginationHandler;
 

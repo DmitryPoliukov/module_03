@@ -3,7 +3,9 @@ package com.epam.esm.repository.dao.impl;
 import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
+import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.Tag;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -69,18 +71,20 @@ public class CertificateDaoImpl implements CertificateDao {
 
     public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
 
-        Query q = entityManager.createQuery(
-                "Select gc From Certificate gc " +
-                        "JOIN Certificate.tags t " +
-                        "WHERE t.name IN (:tags)");
+        Session session = entityManager.unwrap(Session.class);
+        org.hibernate.query.Query<Certificate> query = session.createQuery(
+                "Select gc From Certificate gc JOIN Certificate.tags t WHERE t.name IN (:tags)");
+        query.setParameter("tags", tags);
+        paginationHandler.setPageToQuery(query, page, size);
+        return query.list();
 
-        return q.getResultList();
     }
 
 
     @Override
     public Certificate create(Certificate certificate) {
         if (certificate == null) {
+          //  throw new
         }
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
