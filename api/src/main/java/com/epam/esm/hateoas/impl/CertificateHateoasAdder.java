@@ -4,10 +4,18 @@ import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.repository.dto.CertificateDto;
+import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Class {@code CertificateHateoasAdder} is implementation of interface {@link HateoasAdder}
+ * and intended to work with {@link CertificateDto} objects.
+ *
+ * @author Dmitry Poliukov
+ */
+@Component
 public class CertificateHateoasAdder implements HateoasAdder<CertificateDto> {
     private static final Class<CertificateController> CERTIFICATE_CONTROLLER = CertificateController.class;
     private static final Class<TagController> TAG_CONTROLLER = TagController.class;
