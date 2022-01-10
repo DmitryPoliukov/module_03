@@ -3,8 +3,9 @@ package com.epam.esm.repository.dao.impl;
 import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
-import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.entity.User;
+import com.epam.esm.repository.exception.NullParameterException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -12,23 +13,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional
 public class CertificateDaoImpl implements CertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -42,71 +42,21 @@ public class CertificateDaoImpl implements CertificateDao {
         this.paginationHandler = paginationHandler;
     }
 
-    private static final String SQL_CREATE_CERTIFICATE = "INSERT INTO gift_certificate (name, description, " +
-            "price, duration, create_date, last_update_date) VALUES (?,?,?,?,?,?)";
-
-    private static final String SQL_READ_CERTIFICATE = "SELECT id, name, description, price, duration, " +
-            "create_date, last_update_date from gift_certificate WHERE id = ?";
-
-    private static final String SQL_READ_ALL_CERTIFICATES = "SELECT id, name, description, price, duration, " +
-            "create_date, last_update_date from gift_certificate";
-
-    private static final String SQL_UPDATE = "UPDATE gift_certificate SET name = ?, description = ?, price = ?, duration = ?," +
-            " create_date = ?, last_update_date = ? WHERE id = ?";
-
-    private static final String SQL_DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = ?";
+    private static final String SQL_DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = :id";
 
     private static final String SQL_ADD_TAG = "INSERT INTO gift_certificate_m2m_tag (tag_id, gift_certificate_id) " +
-            "VALUES (?, ?)";
+            "VALUES (:tag_id, :gift_certificate_id)";
 
     private static final String SQL_REMOVE_TAG = "DELETE FROM gift_certificate_m2m_tag WHERE " +
-            "gift_certificate_id = ? AND tag_id = ?";
+            "gift_certificate_id = :gift_certificate_id AND tag_id = :tag_id";
 
-    private static final String SQL_READ_BONDING_TAGS = "SELECT t.id, name FROM tag t JOIN gift_certificate_m2m_tag m2m ON t.id=m2m.tag_id WHERE gift_certificate_id = ?";
+    private static final String SQL_READ_BONDING_TAGS = "SELECT t.id, name FROM tag t JOIN gift_certificate_m2m_tag m2m ON t.id=m2m.tag_id WHERE gift_certificate_id = :gc_id";
 
-    private static final String SQL_DELETE_BONDING_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_m2m_tag WHERE tag_id = ?";
+    private static final String SQL_DELETE_BONDING_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_m2m_tag WHERE tag_id = :id";
 
     private static final String SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID =
-            "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = ?";
+            "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = :id";
 
-    public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
-
-        Session session = entityManager.unwrap(Session.class);
-        org.hibernate.query.Query<Certificate> query = session.createQuery(
-                "Select gc From Certificate gc JOIN Certificate.tags t WHERE t.name IN (:tags)");
-        query.setParameter("tags", tags);
-        paginationHandler.setPageToQuery(query, page, size);
-        return query.list();
-
-        /*
-        GROUP BY certificate_id
-        HAVING COUNT(*) = 3;
-
-         */
-
-    }
-
-
-    @Override
-    public Certificate create(Certificate certificate) {
-        if (certificate == null) {
-          //  throw new
-        }
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(SQL_CREATE_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, certificate.getName());
-            ps.setString(2, certificate.getDescription());
-            ps.setDouble(3, certificate.getPrice());
-            ps.setInt(4, certificate.getDuration());
-            ps.setObject(5, certificate.getCreateDate());
-            ps.setObject(6, certificate.getLastUpdateDate());
-            return ps;
-        }, keyHolder);
-        certificate.setId(keyHolder.getKey().intValue());
-        return certificate;
-    }
     private static final RowMapper<Certificate> CERTIFICATE_ROW_MAPPER =
             (rs, rowNum) -> {
                 Certificate certificate = new Certificate();
@@ -122,15 +72,54 @@ public class CertificateDaoImpl implements CertificateDao {
                 return certificate;
             };
 
-    @Override
-    public Optional<Certificate> read(int certificateId) {
-        return jdbcTemplate.queryForStream(SQL_READ_CERTIFICATE, new BeanPropertyRowMapper<>(Certificate.class), certificateId)
-                .findAny();
+    public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
+
+        Session session = entityManager.unwrap(Session.class);
+/*
+        String querey  = "select * fromo table";
+
+        for (String tag : tags) {
+            querey += "where (sel"
+        }
+
+ */
+
+
+
+        org.hibernate.query.Query<Certificate> query = session.createQuery(
+                "Select gc From Certificate gc JOIN Certificate.tags t WHERE t.name IN (:tags)");
+        query.setParameter("tags", tags);
+        paginationHandler.setPageToQuery(query, page, size);
+        return query.list();
     }
 
     @Override
-    public List<Certificate> readAll() {
-        return jdbcTemplate.query(SQL_READ_ALL_CERTIFICATES, new BeanPropertyRowMapper<>(Certificate.class));
+    public Certificate create(Certificate certificate) {
+        if (certificate == null) {
+            throw new NullParameterException("Null parameter in create certificate");
+        }
+        entityManager.persist(certificate);
+        return certificate;
+    }
+
+    @Override
+    public Optional<Certificate> read(int certificateId) {
+        return Optional.ofNullable(entityManager.find(Certificate.class, certificateId));
+    }
+
+    @Override
+    public List<Certificate> readAll(int page, int size) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Certificate> criteriaQuery = builder.createQuery(Certificate.class);
+        Root<Certificate> from = criteriaQuery.from(Certificate.class);
+        CriteriaQuery<Certificate> select = criteriaQuery.select(from);
+
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        countQuery.select(builder.count(countQuery.from(Certificate.class)));
+
+        TypedQuery<Certificate> typedQuery = entityManager.createQuery(select);
+        paginationHandler.setPageToQuery(typedQuery, page, size);
+        return typedQuery.getResultList();
     }
 
     @Override
@@ -140,59 +129,64 @@ public class CertificateDaoImpl implements CertificateDao {
                 .withProcedureName("findProcedure")
                 .returningResultSet("certificates",
                 CERTIFICATE_ROW_MAPPER);
-        Map out = simpleCall.execute(
+        Map<?,?> out = simpleCall.execute(
                 new MapSqlParameterSource()
                         .addValue("tagName", tagName)
                         .addValue("queryPart", descriptionOrNamePart)
                         .addValue("sortBy", sortParameter)
                         .addValue("ascending", ascending));
-        List certificates = (List) out.get("certificates");
-        return certificates;
+        return (List<Certificate>) out.get("certificates");
     }
 
     @Override
-    @Transactional
     public void update(Certificate certificate) {
-        jdbcTemplate.update(
-                SQL_UPDATE,
-                certificate.getName(),
-                certificate.getDescription(),
-                certificate.getPrice(),
-                certificate.getDuration(),
-                certificate.getCreateDate(),
-                certificate.getLastUpdateDate(),
-                certificate.getId());
+        entityManager.merge(certificate);
     }
 
     @Override
     public List<Tag> readCertificateTags(int certificateId) {
-        return jdbcTemplate.query(SQL_READ_BONDING_TAGS, new BeanPropertyRowMapper<>(Tag.class), certificateId);
+        Query query = entityManager
+                        .createNativeQuery(SQL_READ_BONDING_TAGS)
+                        .setParameter("gc_id", certificateId);
+        return query.getResultList();
     }
 
     @Override
     public void addTag(int tagId, int certificateId) {
-        jdbcTemplate.update(SQL_ADD_TAG, tagId, certificateId);
-
+        Query query =
+                entityManager
+                        .createNativeQuery(SQL_ADD_TAG)
+                        .setParameter("tag_id", tagId)
+                        .setParameter("gift_certificate_id", certificateId);
+        query.executeUpdate();
     }
 
     @Override
     public int removeTag(int tagId, int certificateId) {
-        return jdbcTemplate.update(SQL_REMOVE_TAG, tagId, certificateId);
+        Query q = entityManager.createNativeQuery(SQL_REMOVE_TAG)
+                        .setParameter("tag_id", tagId)
+                        .setParameter("gift_certificate_id", certificateId);
+        return q.executeUpdate();
     }
 
     @Override
     public int delete(int certificateId) {
-        return jdbcTemplate.update(SQL_DELETE_CERTIFICATE, certificateId);
+        Query q = entityManager.createNativeQuery(SQL_DELETE_CERTIFICATE)
+                .setParameter("id", certificateId);
+        return q.executeUpdate();
     }
 
     @Override
     public int deleteBondingTagsByTagId(int tagId) {
-        return jdbcTemplate.update(SQL_DELETE_BONDING_TAGS_BY_TAG_ID, tagId);
+        Query q = entityManager.createNativeQuery(SQL_DELETE_BONDING_TAGS_BY_TAG_ID)
+                .setParameter("id", tagId);
+        return q.executeUpdate();
     }
 
     @Override
     public int deleteBondingTagsByCertificateId(int certificateId) {
-        return jdbcTemplate.update(SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID, certificateId);
+        Query q = entityManager.createNativeQuery(SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID)
+                .setParameter("id", certificateId);
+        return q.executeUpdate();
     }
-
 }

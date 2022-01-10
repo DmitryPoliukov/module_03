@@ -1,7 +1,5 @@
 package com.epam.esm.repository.dao;
 
-import com.epam.esm.repository.entity.PaginationParameter;
-import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.entity.User;
 
 import java.util.List;
@@ -13,8 +11,4 @@ public interface UserDao {
 
     List<User> readAll(int page, int size);
 
-    Tag readMostWidelyTagFromUserWithHighestCostOrders();
-
-
-
-    }
+}

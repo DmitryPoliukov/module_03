@@ -29,7 +29,7 @@ public interface CertificateDao {
      *
      * @return list of certificates
      */
-    List<Certificate> readAll();
+    List<Certificate> readAll(int page, int size);
 
 
     List<Certificate> readCertificateWithParams(String tagName, String descriptionOrNamePart,

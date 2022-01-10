@@ -2,15 +2,11 @@ package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.dao.UserDao;
-import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.entity.User;
-import com.epam.esm.repository.exception.NullParameterException;
-import com.epam.esm.repository.exception.TagException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,23 +17,6 @@ import java.util.Optional;
 @Repository
 @Transactional
 public class UserDaoImpl implements UserDao {
-
-    private static final String SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS =
-            "(SELECT user_id FROM  "
-                    + "(SELECT SUM(cost) AS summa,user_id "
-                    + "FROM orders "
-                    + "GROUP BY user_id) AS user_orders_cost"
-                    + " ORDER BY summa desc limit 1)";
-
-    private static final String SQL_REQUEST_FOR_WIDELY_USED_TAG_FROM_HIGHEST_COST_ORDERS_USER =
-            "SELECT tag.id, tag.name "
-                    + "FROM tag "
-                    + "JOIN gift_certificate_m2m_tag gcm2mt on tag.id = gcm2mt.tag_id "
-                    + "JOIN orders ON gcm2mt.gift_certificate_id=certificate_id "
-                    + "WHERE user_id="
-                    + SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS
-                    + " GROUP BY tag.name "
-                    + "ORDER BY count(tag.name) desc limit 1;";
 
     private final PaginationHandler paginationHandler;
     private final EntityManager entityManager;
@@ -67,18 +46,5 @@ public class UserDaoImpl implements UserDao {
         paginationHandler.setPageToQuery(typedQuery, page, size);
         return typedQuery.getResultList();
 
-    }
-
-    @Override
-    public Tag readMostWidelyTagFromUserWithHighestCostOrders() {
-        Query q = entityManager.createNativeQuery(
-                        SQL_REQUEST_FOR_WIDELY_USED_TAG_FROM_HIGHEST_COST_ORDERS_USER);
-
-        Optional<Object[]> tagValue = q.getResultStream().findFirst();
-        if (tagValue.isPresent()) {
-            Integer id = ((Integer) tagValue.get()[0]);
-            String name = (String) tagValue.get()[1];
-            return new Tag(id, name);
-        } else throw new TagException("There is no any tags in orders");
     }
 }

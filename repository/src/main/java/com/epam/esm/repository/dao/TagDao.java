@@ -48,5 +48,7 @@ public interface TagDao {
 
     List<Tag> readAll();
 
+    Tag readMostWidelyTagFromUserWithHighestCostOrders();
+
 
 }

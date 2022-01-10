@@ -2,24 +2,16 @@ package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.OrderDao;
 import com.epam.esm.repository.dao.PaginationHandler;
-import com.epam.esm.repository.dto.OrderDto;
 import com.epam.esm.repository.entity.Order;
-import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.exception.NullParameterException;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.hibernate.query.Query;
 
 
 @Repository
@@ -36,11 +28,9 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order create(Order order) {
-
         if (order == null) {
             throw new NullParameterException("Null parameter in create order");
         }
-
         entityManager.persist(order);
         return order;
     }
