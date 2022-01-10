@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    User create(User user);
-
     Optional<User> read(int id);
 
     List<User> readAll(int page, int size);

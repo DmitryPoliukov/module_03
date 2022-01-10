@@ -2,14 +2,11 @@ package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.dao.UserDao;
-import com.epam.esm.repository.dto.UserDto;
-import com.epam.esm.repository.entity.PaginationParameter;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.entity.User;
+import com.epam.esm.repository.exception.NullParameterException;
 import com.epam.esm.repository.exception.TagException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -23,7 +20,6 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-
 public class UserDaoImpl implements UserDao {
 
     private static final String SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS =
@@ -46,16 +42,9 @@ public class UserDaoImpl implements UserDao {
     private final PaginationHandler paginationHandler;
     private final EntityManager entityManager;
 
-    @Autowired
     public UserDaoImpl(PaginationHandler paginationHandler, EntityManager entityManager) {
         this.paginationHandler = paginationHandler;
         this.entityManager = entityManager;
-    }
-
-    @Override
-    public User create(User user) {
-        entityManager.persist(user);
-        return user;
     }
 
     @Override

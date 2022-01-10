@@ -1,6 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.repository.dto.CertificateDto;
+import com.epam.esm.repository.entity.Certificate;
+import com.epam.esm.repository.entity.Tag;
 
 import java.util.List;
 
@@ -49,4 +51,6 @@ public interface CertificateService {
 
     List<CertificateDto> readCertificateWithParams(String tagName, String descriptionOrNamePart,
                                              String sortParameter, boolean ascending);
+
+    List<Certificate> readBySomeTags(List<String> tags, int page, int size);
 }

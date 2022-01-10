@@ -52,7 +52,6 @@ public class CertificateServiceImpl implements CertificateService {
         return createdCertificate.toDto();
     }
 
-
     @Override
     public List<CertificateDto> readAll() {
         List<Certificate> certificates = certificateDao.readAll();
@@ -160,5 +159,10 @@ public class CertificateServiceImpl implements CertificateService {
                 tagDao.create(requestTag);
             }
         }
+    }
+
+    @Override
+    public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
+        return certificateDao.readBySomeTags(tags, page, size);
     }
 }

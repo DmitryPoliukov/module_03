@@ -1,6 +1,7 @@
 package com.epam.esm.repository.dao.impl;
 
 import com.epam.esm.repository.dao.CertificateDao;
+import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -27,10 +30,14 @@ import java.util.Optional;
 public class CertificateDaoImpl implements CertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final PaginationHandler paginationHandler;
+    private final EntityManager entityManager;
 
     @Autowired
-    public CertificateDaoImpl(JdbcTemplate jdbcTemplate) {
+    public CertificateDaoImpl(JdbcTemplate jdbcTemplate, PaginationHandler paginationHandler, EntityManager entityManager) {
         this.jdbcTemplate = jdbcTemplate;
+        this.entityManager = entityManager;
+        this.paginationHandler = paginationHandler;
     }
 
     private static final String SQL_CREATE_CERTIFICATE = "INSERT INTO gift_certificate (name, description, " +
@@ -60,22 +67,15 @@ public class CertificateDaoImpl implements CertificateDao {
     private static final String SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID =
             "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = ?";
 
-    // pagination criteria
-    /*
+    public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
 
-    Наконец, давайте посмотрим на более гибкое решение - используя критерии:
+        Query q = entityManager.createQuery(
+                "Select gc From Certificate gc " +
+                        "JOIN Certificate.tags t " +
+                        "WHERE t.name IN (:tags)");
 
-Criteria criteria = session.createCriteria(Foo.class);
-criteria.setFirstResult(0);
-criteria.setMaxResults(pageSize);
-List<Foo> firstPage = criteria.list();
-API запросов Hibernate Criteria упрощает получение общего количества с помощью объекта Projection :
-
-Criteria criteriaCount = session.createCriteria(Foo.class);
-criteriaCount.setProjection(Projections.rowCount());
-Long count = (Long) criteriaCount.uniqueResult();
-     */
-
+        return q.getResultList();
+    }
 
 
     @Override

@@ -23,8 +23,6 @@ public class UserController {
     private final HateoasAdder<UserDto> userHateoasAdder;
     private final HateoasAdder<TagDto> tagHateoasAdder;
 
-
-    @Autowired
     public UserController(UserService userService, HateoasAdder<UserDto> hateoasAdder,
                           HateoasAdder<TagDto> tagHateoasAdder) {
         this.userService = userService;

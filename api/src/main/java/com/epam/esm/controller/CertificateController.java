@@ -1,14 +1,17 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.repository.dto.CertificateDto;
+import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.service.CertificateService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -61,5 +64,17 @@ public class CertificateController {
     public ResponseEntity<Void> deleteCertificate(@PathVariable int id) {
         certificateService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/some-tags")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Certificate> readBySomeTags(@RequestParam("tag") Optional<String[]> tag,
+                                            @RequestParam(value = "page", defaultValue = "1", required = false) @Min(1) int page,
+                                            @RequestParam(value = "size", defaultValue = "5", required = false) @Min(1) int size) {
+    List<String> tags = Arrays.asList(tag.get());
+
+        return certificateService.readBySomeTags(tags, page, size);
+
+
     }
 }

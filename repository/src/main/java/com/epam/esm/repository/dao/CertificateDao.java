@@ -91,11 +91,14 @@ public interface CertificateDao {
     int deleteBondingTagsByCertificateId(int certificateId);
 
     /**
-     * Update patch int.
+     * Read certificates by some tags (AND conditions)
      *
-     * @param certificate the certificate
-     * @return the int
+     * @param tags
+     * @param page
+     * @param size
+     * @return
      */
+    List<Certificate> readBySomeTags(List<String> tags, int page, int size);
 
 
 
