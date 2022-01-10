@@ -31,7 +31,7 @@ public interface TagService {
      *
      * @return the list
      */
-    List<TagDto> readAll();
+    List<TagDto> readAll(int page, int size);
 
     /**
      * Delete.

@@ -28,7 +28,6 @@ public class TagServiceImpl implements TagService {
     private final TagDao tagDao;
     private final CertificateDao certificateDao;
 
-    @Autowired
     public TagServiceImpl(TagDao tagDao, CertificateDao certificateDao) {
         this.tagDao = tagDao;
         this.certificateDao = certificateDao;
@@ -49,22 +48,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> readAll() {
-        List<Tag> entityList = tagDao.readAll();
+    public List<TagDto> readAll(int page, int size) {
+        List<Tag> entityList = tagDao.readAll(page, size);
         return entityList.stream()
                 .map(Tag::toDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     @Override
     public void delete(int id) {
         certificateDao.deleteBondingTagsByTagId(id);
-        int numberOfUpdatedRows = tagDao.delete(id);
-        if (numberOfUpdatedRows != ONE_UPDATED_ROW) {
-            throw ResourceException.validationWithTagId(id).get();
-        }
-
+        tagDao.delete(id);
     }
 
 }

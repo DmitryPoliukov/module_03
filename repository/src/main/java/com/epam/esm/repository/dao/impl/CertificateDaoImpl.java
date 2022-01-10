@@ -78,6 +78,12 @@ public class CertificateDaoImpl implements CertificateDao {
         paginationHandler.setPageToQuery(query, page, size);
         return query.list();
 
+        /*
+        GROUP BY certificate_id
+        HAVING COUNT(*) = 3;
+
+         */
+
     }
 
 

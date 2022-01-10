@@ -28,7 +28,7 @@ public interface TagDao {
      *
      * @return the list
      */
-    List<Tag> readAll();
+    List<Tag> readAll(int page, int size);
 
     /**
      * Delete int.
@@ -36,7 +36,7 @@ public interface TagDao {
      * @param id the id
      * @return the int
      */
-    int delete(int id);
+    void delete(int id);
 
     /**
      * Read optional.
@@ -45,6 +45,8 @@ public interface TagDao {
      * @return the optional
      */
     Optional<Tag> read(String name);
+
+    List<Tag> readAll();
 
 
 }
