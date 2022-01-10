@@ -4,6 +4,7 @@ import com.epam.esm.repository.entity.Certificate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.PositiveOrZero;
@@ -33,6 +34,8 @@ public class CertificateDto extends RepresentationModel<CertificateDto> {
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
     private LocalDateTime lastUpdateDate;
+
+    @JsonProperty("tags")
     private List<TagDto> tagsDto;
 
     @JsonIgnore
