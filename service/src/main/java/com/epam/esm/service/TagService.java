@@ -2,9 +2,6 @@ package com.epam.esm.service;
 
 
 import com.epam.esm.repository.dto.TagDto;
-import com.epam.esm.repository.entity.Tag;
-import com.epam.esm.service.exception.IncorrectParameterException;
-import com.epam.esm.service.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -39,5 +36,7 @@ public interface TagService {
      * @param id the id
      */
     void delete(int id);
+
+    TagDto readMostWidelyTagFromUserWithHighestCostOrders();
 
 }

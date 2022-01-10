@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.repository.dto.CertificateDto;
 import com.epam.esm.repository.entity.Certificate;
-import com.epam.esm.repository.entity.Tag;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public interface CertificateService {
      *
      * @return the list
      */
-    List<CertificateDto> readAll();
+    List<CertificateDto> readAll(int page, int size);
 
     /**
      * Read certificate.

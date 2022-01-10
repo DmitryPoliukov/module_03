@@ -8,11 +8,7 @@ import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.IncorrectParameterException;
 import com.epam.esm.service.exception.ResourceException;
-import com.epam.esm.service.validation.TagDtoValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,10 +16,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional
 public class TagServiceImpl implements TagService {
-
-    public static final int ONE_UPDATED_ROW = 1;
 
     private final TagDao tagDao;
     private final CertificateDao certificateDao;
@@ -35,7 +29,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto create(TagDto inputTag) {
-        TagDtoValidator.validate(inputTag);
+        if (inputTag == null) {
+            throw new IncorrectParameterException("Null parameter in create tag");
+        }
         Optional<Tag> existingTag = tagDao.read(inputTag.getName());
         return existingTag.orElseGet(() -> tagDao.create(inputTag.toEntity())).toDto();
     }
@@ -43,7 +39,6 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto read(int id) {
         Optional<Tag> tag = tagDao.read(id);
-
         return tag.orElseThrow(ResourceException.notFoundWithTagId(id)).toDto();
     }
 
@@ -59,6 +54,11 @@ public class TagServiceImpl implements TagService {
     public void delete(int id) {
         certificateDao.deleteBondingTagsByTagId(id);
         tagDao.delete(id);
+    }
+
+    @Override
+    public TagDto readMostWidelyTagFromUserWithHighestCostOrders() {
+        return tagDao.readMostWidelyTagFromUserWithHighestCostOrders().toDto();
     }
 
 }

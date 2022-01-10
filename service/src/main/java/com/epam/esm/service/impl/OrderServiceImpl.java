@@ -9,7 +9,8 @@ import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.exception.ResourceNotFoundException;
+import com.epam.esm.service.exception.IncorrectParameterException;
+import com.epam.esm.service.exception.ResourceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,28 +37,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto create(OrderDto orderDto) {
+        if (orderDto == null) {
+            throw new IncorrectParameterException("Null parameter in create order");
+        }
         Optional<User> optionalUser = userDao.read(orderDto.getUserDto().getId());
         if (optionalUser.isEmpty()) {
-            ResourceNotFoundException.notFoundWithUser(orderDto.getUserDto().getId());
+            ResourceException.notFoundWithUser(orderDto.getUserDto().getId());
         }
 
         Optional<Certificate> optionalCertificate = certificateDao.read(orderDto.getCertificateId());
         if (optionalCertificate.isEmpty()) {
-            ResourceNotFoundException.notFoundWithCertificateId(orderDto.getCertificateId());
+            ResourceException.notFoundWithCertificateId(orderDto.getCertificateId());
         }
-
 
         Order order = orderDto.toEntity();
         order.setCertificate(certificateService.read(orderDto.getCertificateId()).toEntity());
-        orderDao.create(order);
-        return readOrder(order.getId());
+        return orderDao.create(order).toDto();
     }
 
     @Override
     public List<OrderDto> readAllByUserId(int userId, int page, int size) {
         Optional<User> optionalUser = userDao.read(userId);
         if (optionalUser.isEmpty()) {
-            ResourceNotFoundException.notFoundWithUser(userId);
+            ResourceException.notFoundWithUser(userId);
         }
 
         return orderDao.readAllByUserId(userId, page, size).stream()
@@ -68,6 +70,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto readOrder(int orderId) {
         Optional<Order> order = orderDao.readOrder(orderId);
-        return order.orElseThrow(ResourceNotFoundException.notFoundWithOrder(orderId)).toDto();
+        return order.orElseThrow(ResourceException.notFoundWithOrder(orderId)).toDto();
     }
 }

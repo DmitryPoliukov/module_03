@@ -7,12 +7,9 @@ import com.epam.esm.repository.dto.TagDto;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.exception.IncorrectParameterException;
 import com.epam.esm.service.exception.ResourceException;
-import com.epam.esm.service.validation.CertificateDtoValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -24,23 +21,23 @@ import java.util.stream.Collectors;
 import static java.time.LocalDateTime.now;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional
 public class CertificateServiceImpl implements CertificateService {
 
     public static final int ONE_UPDATED_ROW = 1;
     private final CertificateDao certificateDao;
     private final TagDao tagDao;
 
-    @Autowired
     public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao) {
         this.certificateDao = certificateDao;
         this.tagDao = tagDao;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     @Override
     public CertificateDto create(CertificateDto certificateDto) {
-        CertificateDtoValidator.validate(certificateDto);
+        if (certificateDto == null) {
+            throw new IncorrectParameterException("Null parameter in create certificate");
+        }
         LocalDateTime timeNow = now();
         certificateDto.setCreateDate(timeNow);
         certificateDto.setLastUpdateDate(timeNow);
@@ -53,8 +50,8 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificateDto> readAll() {
-        List<Certificate> certificates = certificateDao.readAll();
+    public List<CertificateDto> readAll(int page, int size) {
+        List<Certificate> certificates = certificateDao.readAll(page, size);
         for (Certificate certificate : certificates) {
             certificate.setTags(certificateDao.readCertificateTags(certificate.getId()));
         }
@@ -73,6 +70,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public void update(int id, CertificateDto certificateDto) {
+        if (certificateDto == null) {
+            throw new IncorrectParameterException("Null parameter in update certificate");
+        }
         certificateDto.setId(id);
         CertificateDto actualCertificateDto = fillingFields(certificateDto);
         actualCertificateDto.setLastUpdateDate(LocalDateTime.now());
@@ -85,6 +85,9 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     private CertificateDto fillingFields(CertificateDto certificateDto) {
+        if (certificateDto == null) {
+            throw new IncorrectParameterException("Null parameter in fillingFields(certificate)");
+        }
         CertificateDto oldCertificate = certificateDao.read(certificateDto.getId())
                 .orElseThrow(ResourceException.notFoundWithCertificateId(certificateDto.getId())).toDto();
 
@@ -109,7 +112,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     @Override
     public void delete(int id){
         certificateDao.deleteBondingTagsByCertificateId(id);
@@ -133,6 +135,9 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     public void addTagsToDb(Certificate certificate) {
+        if (certificate == null) {
+            throw new IncorrectParameterException("Null parameter in add tags to DB");
+        }
         List<Tag> tags = certificate.getTags();
         if (tags != null) {
             for (Tag tag : tags) {
@@ -145,7 +150,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private void saveNewTags(List<Tag> requestTags, List<Tag> createdTags) {
         if (requestTags == null) {
-            return;
+            throw new IncorrectParameterException("Null parameter save new tags to DB");
         }
         for (Tag requestTag : requestTags) {
             boolean isExist = false;
@@ -163,6 +168,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
+        if (tags == null) {
+            throw new IncorrectParameterException("Null parameter in read certificate by some tags");
+        }
         return certificateDao.readBySomeTags(tags, page, size);
     }
 }

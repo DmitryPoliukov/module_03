@@ -1,12 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.repository.dao.UserDao;
-import com.epam.esm.repository.dto.TagDto;
 import com.epam.esm.repository.dto.UserDto;
 import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.service.exception.ResourceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto read(int id) {
         Optional<User> user = userDao.read(id);
-        return user.orElseThrow(ResourceNotFoundException.notFoundWithUser(id)).toDto();
+        return user.orElseThrow(ResourceException.notFoundWithUser(id)).toDto();
     }
 
     @Override
@@ -36,10 +34,5 @@ public class UserServiceImpl implements UserService {
         return users.stream()
                 .map(User::toDto)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public TagDto readMostWidelyTagFromUserWithHighestCostOrders() {
-        return userDao.readMostWidelyTagFromUserWithHighestCostOrders().toDto();
     }
 }
