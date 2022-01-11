@@ -3,28 +3,28 @@ package com.epam.esm.repository.dao.impl;
 import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
+import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.Tag;
-import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.exception.NullParameterException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -50,27 +50,12 @@ public class CertificateDaoImpl implements CertificateDao {
     private static final String SQL_REMOVE_TAG = "DELETE FROM gift_certificate_m2m_tag WHERE " +
             "gift_certificate_id = :gift_certificate_id AND tag_id = :tag_id";
 
-    private static final String SQL_READ_BONDING_TAGS = "SELECT t.id, name FROM tag t JOIN gift_certificate_m2m_tag m2m ON t.id=m2m.tag_id WHERE gift_certificate_id = :gc_id";
+    private static final String SQL_READ_BONDING_TAGS = "SELECT t.id, t.name FROM tag t JOIN gift_certificate_m2m_tag m2m ON t.id=m2m.tag_id WHERE gift_certificate_id = ?";
 
     private static final String SQL_DELETE_BONDING_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_m2m_tag WHERE tag_id = :id";
 
     private static final String SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID =
             "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = :id";
-
-    private static final RowMapper<Certificate> CERTIFICATE_ROW_MAPPER =
-            (rs, rowNum) -> {
-                Certificate certificate = new Certificate();
-                certificate.setId(rs.getInt(1));
-                certificate.setName(rs.getString(6));
-                certificate.setDescription(rs.getString(3));
-                Double price = rs.getDouble(7);
-                certificate.setPrice(price);
-                Integer duration = rs.getInt(4);
-                certificate.setDuration(duration);
-                certificate.setCreateDate(rs.getObject(2, LocalDateTime.class));
-                certificate.setLastUpdateDate(rs.getObject(5, LocalDateTime.class));
-                return certificate;
-            };
 
     public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
 
@@ -83,9 +68,6 @@ public class CertificateDaoImpl implements CertificateDao {
         }
 
  */
-
-
-
         org.hibernate.query.Query<Certificate> query = session.createQuery(
                 "Select gc From Certificate gc JOIN Certificate.tags t WHERE t.name IN (:tags)");
         query.setParameter("tags", tags);
@@ -124,18 +106,40 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public List<Certificate> readCertificateWithParams(String tagName, String descriptionOrNamePart, String sortParameter, boolean ascending) {
-        jdbcTemplate.setResultsMapCaseInsensitive(true);
-        SimpleJdbcCall simpleCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("findProcedure")
-                .returningResultSet("certificates",
-                CERTIFICATE_ROW_MAPPER);
-        Map<?,?> out = simpleCall.execute(
-                new MapSqlParameterSource()
-                        .addValue("tagName", tagName)
-                        .addValue("queryPart", descriptionOrNamePart)
-                        .addValue("sortBy", sortParameter)
-                        .addValue("ascending", ascending));
-        return (List<Certificate>) out.get("certificates");
+        StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("findProcedure");
+
+        storedProcedure.registerStoredProcedureParameter("tagName", String.class, ParameterMode.IN);
+        storedProcedure.registerStoredProcedureParameter("queryPart", String.class, ParameterMode.IN);
+        storedProcedure.registerStoredProcedureParameter("sortBy", String.class, ParameterMode.IN);
+        storedProcedure.registerStoredProcedureParameter("ascending", Boolean.class, ParameterMode.IN);
+        storedProcedure.setParameter("tagName", tagName);
+        storedProcedure.setParameter("queryPart", descriptionOrNamePart);
+        storedProcedure.setParameter("sortBy", sortParameter);
+        storedProcedure.setParameter("ascending", ascending);
+
+        storedProcedure.execute();
+
+        List<Object[]> objList = storedProcedure.getResultList();
+        List<Certificate> certificates = new ArrayList<>();
+        for (Object[] array : objList) {
+            Certificate certificate = new Certificate();
+            certificate.setId((Integer) array[0]);
+
+            Timestamp createDate = (Timestamp) array[1];
+            certificate.setCreateDate(createDate.toLocalDateTime());
+
+            certificate.setDescription((String) array[2]);
+            certificate.setDuration((Integer) array[3]);
+
+            Timestamp lastUpdateDate = (Timestamp) array[4];
+            certificate.setLastUpdateDate(lastUpdateDate.toLocalDateTime());
+
+            certificate.setName((String) array[5]);
+            certificate.setPrice((Double) array[6]);
+            certificates.add(certificate);
+
+        }
+        return certificates;
     }
 
     @Override
@@ -145,10 +149,7 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public List<Tag> readCertificateTags(int certificateId) {
-        Query query = entityManager
-                        .createNativeQuery(SQL_READ_BONDING_TAGS)
-                        .setParameter("gc_id", certificateId);
-        return query.getResultList();
+        return jdbcTemplate.query(SQL_READ_BONDING_TAGS, new BeanPropertyRowMapper<>(Tag.class), certificateId);
     }
 
     @Override

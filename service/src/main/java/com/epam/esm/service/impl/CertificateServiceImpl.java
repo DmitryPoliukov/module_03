@@ -52,9 +52,6 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<CertificateDto> readAll(int page, int size) {
         List<Certificate> certificates = certificateDao.readAll(page, size);
-        for (Certificate certificate : certificates) {
-            certificate.setTags(certificateDao.readCertificateTags(certificate.getId()));
-        }
         return certificates.stream()
                 .map(Certificate::toDto)
                 .collect(Collectors.toList());
@@ -126,7 +123,7 @@ public class CertificateServiceImpl implements CertificateService {
                                                           String sortParameter, boolean ascending) {
         List<Certificate> certificates = certificateDao.readCertificateWithParams(tagName, descriptionOrNamePart,
                 sortParameter, ascending);
-        for (Certificate certificate : certificates) {
+        for(Certificate certificate : certificates) {
             certificate.setTags(certificateDao.readCertificateTags(certificate.getId()));
         }
         return certificates.stream()
