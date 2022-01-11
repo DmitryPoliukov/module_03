@@ -3,14 +3,12 @@ package com.epam.esm.repository.dao.impl;
 import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
-import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.exception.NullParameterException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +17,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +44,7 @@ public class CertificateDaoImpl implements CertificateDao {
     private static final String SQL_REMOVE_TAG = "DELETE FROM gift_certificate_m2m_tag WHERE " +
             "gift_certificate_id = :gift_certificate_id AND tag_id = :tag_id";
 
-    private static final String SQL_READ_BONDING_TAGS = "SELECT t.id, t.name FROM tag t JOIN gift_certificate_m2m_tag m2m ON t.id=m2m.tag_id WHERE gift_certificate_id = ?";
+    private static final String SQL_READ_BONDING_TAGS = "SELECT t.id, t.name FROM tag t JOIN gift_certificate_m2m_tag m2m ON t.id=m2m.tag_id WHERE gift_certificate_id = :gc_id";
 
     private static final String SQL_DELETE_BONDING_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_m2m_tag WHERE tag_id = :id";
 
@@ -149,7 +143,17 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public List<Tag> readCertificateTags(int certificateId) {
-        return jdbcTemplate.query(SQL_READ_BONDING_TAGS, new BeanPropertyRowMapper<>(Tag.class), certificateId);
+        List<Object[]> objects = entityManager.createNativeQuery(SQL_READ_BONDING_TAGS)
+                .setParameter("gc_id", certificateId)
+                .getResultList();
+        List<Tag> tagList = new ArrayList<>();
+        for(Object[] object : objects) {
+            Tag tag = new Tag();
+           tag.setId((Integer) object[0]);
+           tag.setName((String) object[1]);
+           tagList.add(tag);
+        }
+        return tagList;
     }
 
     @Override
