@@ -164,10 +164,12 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
-        if (tags == null) {
+    public List<CertificateDto> readBySomeTags(List<String> tagsName, int page, int size) {
+        if (tagsName == null) {
             throw new IncorrectParameterException("Null parameter in read certificate by some tags");
         }
-        return certificateDao.readBySomeTags(tags, page, size);
+        return certificateDao.readBySomeTags(tagsName, page, size).stream()
+                .map(Certificate::toDto)
+                .collect(Collectors.toList());
     }
 }

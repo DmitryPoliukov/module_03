@@ -51,5 +51,5 @@ public interface CertificateService {
     List<CertificateDto> readCertificateWithParams(String tagName, String descriptionOrNamePart,
                                              String sortParameter, boolean ascending);
 
-    List<Certificate> readBySomeTags(List<String> tags, int page, int size);
+    List<CertificateDto> readBySomeTags(List<String> tags, int page, int size);
 }

@@ -140,15 +140,6 @@ class CertificateServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> certificateService.read(ID));
     }
 
-    @Test
-    void readAllCertificateDaoReadAllInvocation() {
-        Certificate certificate = givenCertificate1();
-        when(certificateDao.readAll()).thenReturn(List.of(certificate));
-
-        certificateService.readAll();
-
-        verify(certificateDao).readAll();
-    }
 
     @Test
     void deleteCertificateDaoDeleteCertificateTagsByCertificateIdInvocation() {

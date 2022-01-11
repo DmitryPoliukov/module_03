@@ -4,11 +4,9 @@ import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.exception.NullParameterException;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +23,10 @@ import java.util.Optional;
 @Transactional
 public class CertificateDaoImpl implements CertificateDao {
 
-    private final JdbcTemplate jdbcTemplate;
     private final PaginationHandler paginationHandler;
     private final EntityManager entityManager;
 
-    @Autowired
-    public CertificateDaoImpl(JdbcTemplate jdbcTemplate, PaginationHandler paginationHandler, EntityManager entityManager) {
-        this.jdbcTemplate = jdbcTemplate;
+    public CertificateDaoImpl( PaginationHandler paginationHandler, EntityManager entityManager) {
         this.entityManager = entityManager;
         this.paginationHandler = paginationHandler;
     }
@@ -51,23 +46,21 @@ public class CertificateDaoImpl implements CertificateDao {
     private static final String SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID =
             "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = :id";
 
-    public List<Certificate> readBySomeTags(List<String> tags, int page, int size) {
+    public List<Certificate> readBySomeTags(List<String> tagsName, int page, int size) {
 
         Session session = entityManager.unwrap(Session.class);
-/*
-        String querey  = "select * fromo table";
-
-        for (String tag : tags) {
-            querey += "where (sel"
+        StringBuilder sb = new StringBuilder("Select gc From Certificate as gc JOIN gc.tags as t ");
+        for(int i = 1; i < tagsName.size(); i++) {
+            sb.append(" JOIN gc.tags as t").append(i);
         }
-
- */
-        org.hibernate.query.Query<Certificate> query = session.createQuery(
-                "Select gc From Certificate gc JOIN Certificate.tags t WHERE t.name IN (:tags)");
-        query.setParameter("tags", tags);
+        sb.append(" WHERE t.name = \'").append(tagsName.get(0)).append("\'");
+        for(int i = 1; i < tagsName.size(); i++) {
+            sb.append(" AND t").append(i).append(".name = \'").append(tagsName.get(i)).append("\'");
+        }
+        org.hibernate.query.Query<Certificate> query = session.createQuery(sb.toString());
         paginationHandler.setPageToQuery(query, page, size);
         return query.list();
-    }
+     }
 
     @Override
     public Certificate create(Certificate certificate) {

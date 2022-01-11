@@ -128,7 +128,7 @@ public class CertificateController {
     }
 
     /**
-     * Method for getting list of gift certificates from data source by several tags (“and” condition).
+     * Method for getting list of gift certificates from data source by several tags name (“and” condition).
      *
      * @param tag one or more tag's name
      * @param page the number of page for pagination
@@ -138,7 +138,7 @@ public class CertificateController {
 
     @GetMapping("/some-tags")
     @ResponseStatus(HttpStatus.OK)
-    public List<Certificate> readBySomeTags(@RequestParam("tag") Optional<String[]> tag,
+    public List<CertificateDto> readBySomeTags(@RequestParam("tag") Optional<String[]> tag,
                                             @RequestParam(value = "page", defaultValue = "1", required = false) @Min(1) int page,
                                             @RequestParam(value = "size", defaultValue = "5", required = false) @Min(1) int size) {
     List<String> tags = Arrays.asList(tag.get());
