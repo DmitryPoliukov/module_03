@@ -45,13 +45,12 @@ public class OrderServiceImpl implements OrderService {
             ResourceException.notFoundWithUser(orderDto.getUserDto().getId());
         }
 
-        Optional<Certificate> optionalCertificate = certificateDao.read(orderDto.getCertificateId());
+        Optional<Certificate> optionalCertificate = certificateDao.read(orderDto.getCertificateDto().getId());
         if (optionalCertificate.isEmpty()) {
-            ResourceException.notFoundWithCertificateId(orderDto.getCertificateId());
+            ResourceException.notFoundWithCertificateId(orderDto.getCertificateDto().getId());
         }
 
         Order order = orderDto.toEntity();
-        order.setCertificate(certificateService.read(orderDto.getCertificateId()).toEntity());
         return orderDao.create(order).toDto();
     }
 

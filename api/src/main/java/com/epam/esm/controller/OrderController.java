@@ -1,7 +1,9 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.hateoas.HateoasAdder;
+import com.epam.esm.repository.dto.CertificateDto;
 import com.epam.esm.repository.dto.OrderDto;
+import com.epam.esm.repository.dto.TagDto;
 import com.epam.esm.repository.dto.UserDto;
 import com.epam.esm.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -27,11 +29,19 @@ public class OrderController {
     private final OrderService orderService;
     private final HateoasAdder<OrderDto> hateoasAdder;
     private final HateoasAdder<UserDto> userDtoHateoasAdder;
+    private final HateoasAdder<CertificateDto> certificateDtoHateoasAdder;
+    private final HateoasAdder<TagDto> tagDtoHateoasAdder;
 
-    public OrderController(OrderService orderService, HateoasAdder<OrderDto> hateoasAdder, HateoasAdder<UserDto> userDtoHateoasAdder) {
+    public OrderController(OrderService orderService,
+                           HateoasAdder<OrderDto> hateoasAdder,
+                           HateoasAdder<UserDto> userDtoHateoasAdder,
+                           HateoasAdder<CertificateDto> certificateDtoHateoasAdder,
+                           HateoasAdder<TagDto> tagDtoHateoasAdder) {
         this.orderService = orderService;
         this.hateoasAdder = hateoasAdder;
         this.userDtoHateoasAdder = userDtoHateoasAdder;
+        this.certificateDtoHateoasAdder = certificateDtoHateoasAdder;
+        this.tagDtoHateoasAdder = tagDtoHateoasAdder;
     }
 
     /**
@@ -59,6 +69,10 @@ public class OrderController {
         OrderDto order = orderService.readOrder(id);
         hateoasAdder.addLinks(order);
         userDtoHateoasAdder.addLinks(order.getUserDto());
+        certificateDtoHateoasAdder.addLinks(order.getCertificateDto());
+        order.getCertificateDto().getTagsDto().stream()
+                .peek(tagDtoHateoasAdder::addLinks)
+                .collect(Collectors.toList());
         return order;
     }
 
@@ -78,6 +92,9 @@ public class OrderController {
 
         return orders.stream()
                 .peek(orderDto -> userDtoHateoasAdder.addLinks(orderDto.getUserDto()))
+                .peek(orderDto -> certificateDtoHateoasAdder.addLinks(orderDto.getCertificateDto()))
+                .peek(orderDto -> orderDto.getCertificateDto().getTagsDto().stream().peek(tagDtoHateoasAdder::addLinks)
+                                        .collect(Collectors.toList()))
                 .peek(hateoasAdder::addLinks)
                 .collect(Collectors.toList());
     }

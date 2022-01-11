@@ -18,7 +18,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class CertificateHateoasAdder implements HateoasAdder<CertificateDto> {
     private static final Class<CertificateController> CERTIFICATE_CONTROLLER = CertificateController.class;
-    private static final Class<TagController> TAG_CONTROLLER = TagController.class;
 
     @Override
     public void addLinks(CertificateDto certificateDto) {
@@ -29,8 +28,5 @@ public class CertificateHateoasAdder implements HateoasAdder<CertificateDto> {
         certificateDto.add(linkTo(methodOn(CERTIFICATE_CONTROLLER)
                 .deleteCertificate(certificateDto.getId())).withRel("delete"));
         certificateDto.add(linkTo(methodOn(CERTIFICATE_CONTROLLER).createCertificate(certificateDto)).withRel("new"));
-        certificateDto.getTagsDto().forEach(
-                tagDto -> tagDto.add(linkTo(methodOn(TAG_CONTROLLER).readTag(tagDto.getId())).withSelfRel()));
-
     }
 }

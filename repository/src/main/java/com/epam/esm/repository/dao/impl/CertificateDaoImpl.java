@@ -4,7 +4,6 @@ import com.epam.esm.repository.dao.CertificateDao;
 import com.epam.esm.repository.dao.PaginationHandler;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Tag;
-import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.exception.NullParameterException;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;

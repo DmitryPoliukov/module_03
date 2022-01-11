@@ -19,10 +19,8 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     @JsonProperty("user")
     private UserDto userDto;
 
-    private int certificateId;
-
-    @Size(min = 1,max = 45, message = "Certificate name length should be from 1 to 45")
-    private String certificateName;
+    @JsonProperty("certificate")
+    private CertificateDto certificateDto;
 
     @PositiveOrZero(message = "Order's cost should positive or zero")
     private double cost;
@@ -30,20 +28,12 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     public OrderDto() {
     }
 
-    public int getCertificateId() {
-        return certificateId;
+    public CertificateDto getCertificateDto() {
+        return certificateDto;
     }
 
-    public void setCertificateId(int certificateId) {
-        this.certificateId = certificateId;
-    }
-
-    public String getCertificateName() {
-        return certificateName;
-    }
-
-    public void setCertificateName(String certificateName) {
-        this.certificateName = certificateName;
+    public void setCertificateDto(CertificateDto certificateDto) {
+        this.certificateDto = certificateDto;
     }
 
     public Order toEntity() {
@@ -51,7 +41,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
         entityOrder.setId(this.id);
         entityOrder.setCreateDate(this.getCreateDate());
         entityOrder.setUser(this.getUserDto().toEntity());
-        entityOrder.setCertificate(new Certificate(certificateId, certificateName));
+        entityOrder.setCertificate(this.getCertificateDto().toEntity());
         entityOrder.setCost(this.getCost());
         return entityOrder;
     }
@@ -113,8 +103,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
         result = prime * result + id;
         result = prime * result + (createDate != null ? createDate.hashCode() : 0);
         result = 31 * result + (userDto != null ? userDto.hashCode() : 0);
-        result = prime * result + certificateId;
-        result = prime * result + (certificateName != null ? certificateName.hashCode() : 0);
+        result = prime * result + (certificateDto != null ? certificateDto.hashCode() : 0);
         return result;
     }
 
@@ -124,7 +113,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
         final StringBuilder sb = new StringBuilder("Order{");
         sb.append("id=").append(id);
         sb.append(", createDate=").append(createDate);
-        sb.append(", certificate=").append(certificateName);
+        sb.append(", certificate=").append(certificateDto);
         sb.append('}');
         return sb.toString();
     }
