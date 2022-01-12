@@ -14,9 +14,12 @@ import com.epam.esm.service.exception.ResourceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 @Transactional
@@ -49,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         if (optionalCertificate.isEmpty()) {
             ResourceException.notFoundWithCertificateId(orderDto.getCertificateDto().getId());
         }
-
+        orderDto.setCreateDate(LocalDateTime.now());
         Order order = orderDto.toEntity();
         return orderDao.create(order).toDto();
     }

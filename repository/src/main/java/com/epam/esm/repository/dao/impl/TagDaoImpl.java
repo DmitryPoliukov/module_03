@@ -92,11 +92,13 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Optional<Tag> read(String name) {
+    public Optional<Tag> readByName(String name) {
         if(name == null) {
             throw new NullParameterException("Null parameter in read tag by name");
         }
-        return Optional.ofNullable(entityManager.find(Tag.class, name));
+        String hql = "Select t from Tag  t where t.name=:name";
+        Query query = entityManager.createQuery(hql).setParameter("name", name);
+        return query.getResultStream().findFirst();
     }
 
     @Override

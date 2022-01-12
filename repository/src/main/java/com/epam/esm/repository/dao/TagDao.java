@@ -44,7 +44,7 @@ public interface TagDao {
      * @param name the name
      * @return the optional
      */
-    Optional<Tag> read(String name);
+    Optional<Tag> readByName(String name);
 
     List<Tag> readAll();
 
