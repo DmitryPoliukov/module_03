@@ -1,13 +1,11 @@
 package com.epam.esm.repository.dto;
 
-import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 public class OrderDto extends RepresentationModel<OrderDto> {
 
@@ -77,7 +75,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     public void setCost(double cost) {
         this.cost = cost;
     }
-/*
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,7 +93,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
                 ? certificateDto.equals(orderDto.certificateDto)
                 : orderDto.certificateDto == null;
     }
-*/
+
     @Override
     public int hashCode() {
         int result = 1;
@@ -114,6 +112,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
         sb.append("id=").append(id);
         sb.append(", createDate=").append(createDate);
         sb.append(", certificate=").append(certificateDto);
+        sb.append(", user=").append(userDto);
         sb.append('}');
         return sb.toString();
     }

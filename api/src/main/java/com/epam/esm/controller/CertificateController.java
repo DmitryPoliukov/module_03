@@ -86,9 +86,11 @@ public class CertificateController {
      */
     @GetMapping("/search")
     public List<CertificateDto> readCertificateWithParams(@RequestParam(required = false) String tagName, @RequestParam(required = false) String descriptionOrNamePart,
-                                                          @RequestParam(required = false) String sortParameter, @RequestParam(required = false) boolean ascending) {
+                                                          @RequestParam(required = false) String sortParameter, @RequestParam(required = false) boolean ascending,
+                                                          @RequestParam(value = "page", defaultValue = "1", required = false) @Min(1) int page,
+                                                          @RequestParam(value = "size", defaultValue = "5", required = false) @Min(1) int size) {
 
-        return certificateService.readCertificateWithParams(tagName, descriptionOrNamePart, sortParameter, ascending).stream()
+        return certificateService.readCertificateWithParams(tagName, descriptionOrNamePart, sortParameter, ascending, page, size).stream()
                 .peek(certificateDto -> certificateDto.getTagsDto().stream().peek(tagDtoHateoasAdder::addLinks)
                         .collect(Collectors.toList()))
                 .peek(certificateHateoasAdder::addLinks)

@@ -120,9 +120,10 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDto> readCertificateWithParams(String tagName, String descriptionOrNamePart,
-                                                          String sortParameter, boolean ascending) {
+                                                          String sortParameter, boolean ascending,
+                                                          int page, int size) {
         List<Certificate> certificates = certificateDao.readCertificateWithParams(tagName, descriptionOrNamePart,
-                sortParameter, ascending);
+                sortParameter, ascending, page, size);
         for(Certificate certificate : certificates) {
             certificate.setTags(certificateDao.readCertificateTags(certificate.getId()));
         }

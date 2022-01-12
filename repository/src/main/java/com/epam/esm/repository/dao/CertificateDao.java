@@ -33,7 +33,8 @@ public interface CertificateDao {
 
 
     List<Certificate> readCertificateWithParams(String tagName, String descriptionOrNamePart,
-                                                String sortParameters, boolean ascending);
+                                                String sortParameters, boolean ascending,
+                                                int page, int size);
 
     /**
      * Update int.

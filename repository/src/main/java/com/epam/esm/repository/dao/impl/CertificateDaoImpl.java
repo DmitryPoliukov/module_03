@@ -91,7 +91,9 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> readCertificateWithParams(String tagName, String descriptionOrNamePart, String sortParameter, boolean ascending) {
+    public List<Certificate> readCertificateWithParams(String tagName, String descriptionOrNamePart,
+                                                       String sortParameter, boolean ascending,
+                                                       int page, int size) {
         StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("findProcedure");
 
         storedProcedure.registerStoredProcedureParameter("tagName", String.class, ParameterMode.IN);
@@ -123,9 +125,12 @@ public class CertificateDaoImpl implements CertificateDao {
             certificate.setName((String) array[5]);
             certificate.setPrice((Double) array[6]);
             certificates.add(certificate);
-
         }
-        return certificates;
+        int firstResult = (page - 1) * size;
+        int maxResult = Math.min(firstResult + size, certificates.size()-1);
+
+
+        return certificates.subList(firstResult, maxResult+1);
     }
 
     @Override

@@ -49,7 +49,8 @@ public interface CertificateService {
     void delete(int id);
 
     List<CertificateDto> readCertificateWithParams(String tagName, String descriptionOrNamePart,
-                                             String sortParameter, boolean ascending);
+                                                   String sortParameter, boolean ascending,
+                                                   int page, int size);
 
     List<CertificateDto> readBySomeTags(List<String> tags, int page, int size);
 }
