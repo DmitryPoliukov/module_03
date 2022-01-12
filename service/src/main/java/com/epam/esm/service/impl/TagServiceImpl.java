@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService {
         if (inputTag == null) {
             throw new IncorrectParameterException("Null parameter in create tag");
         }
-        Optional<Tag> existingTag = tagDao.read(inputTag.getName());
+        Optional<Tag> existingTag = tagDao.readByName(inputTag.getName());
         return existingTag.orElseGet(() -> tagDao.create(inputTag.toEntity())).toDto();
     }
 

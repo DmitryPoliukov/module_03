@@ -139,7 +139,7 @@ public class CertificateServiceImpl implements CertificateService {
         List<Tag> tags = certificate.getTags();
         if (tags != null) {
             for (Tag tag : tags) {
-                Optional<Tag> existedTag = tagDao.read(tag.getName());
+                Optional<Tag> existedTag = tagDao.readByName(tag.getName());
                 int tagId = existedTag.map(Tag::getId).orElseGet(() -> tagDao.create(tag).getId());
                 certificateDao.addTag(tagId, certificate.getId());
             }
