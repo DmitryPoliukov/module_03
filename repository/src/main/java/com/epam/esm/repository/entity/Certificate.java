@@ -28,7 +28,7 @@ public class Certificate {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH})
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "gift_certificate_m2m_tag",
             joinColumns = {@JoinColumn(name = "gift_certificate_id")},

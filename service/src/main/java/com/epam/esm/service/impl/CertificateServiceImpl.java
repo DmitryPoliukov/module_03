@@ -1,11 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.repository.dao.CertificateDao;
-import com.epam.esm.repository.dao.TagDao;
 import com.epam.esm.repository.dto.CertificateDto;
-import com.epam.esm.repository.dto.TagDto;
 import com.epam.esm.repository.entity.Certificate;
-import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.exception.IncorrectParameterException;
 import com.epam.esm.service.exception.ResourceException;
@@ -14,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,11 +22,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     public static final int ONE_UPDATED_ROW = 1;
     private final CertificateDao certificateDao;
-    private final TagDao tagDao;
 
-    public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao) {
+    public CertificateServiceImpl(CertificateDao certificateDao) {
         this.certificateDao = certificateDao;
-        this.tagDao = tagDao;
     }
 
     @Override
@@ -42,10 +36,6 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDto.setCreateDate(timeNow);
         certificateDto.setLastUpdateDate(timeNow);
         Certificate createdCertificate = certificateDao.create(certificateDto.toEntity());
-        createdCertificate.setTags(certificateDto.getTagsDto().stream()
-                .map(TagDto::toEntity)
-                .collect(Collectors.toList()));
-        addTagsToDb(createdCertificate);
         return createdCertificate.toDto();
     }
 
@@ -60,8 +50,6 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public CertificateDto read(int id) {
         Optional<Certificate> certificate = certificateDao.read(id);
-        certificate.ifPresent(
-                actualCertificate -> actualCertificate.setTags(certificateDao.readCertificateTags(id)));
         return certificate.orElseThrow(ResourceException.notFoundWithCertificateId(id)).toDto();
     }
 
@@ -73,11 +61,6 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDto.setId(id);
         CertificateDto actualCertificateDto = fillingFields(certificateDto);
         actualCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        List<Tag> requestTags = actualCertificateDto.getTagsDto().stream()
-                .map(TagDto::toEntity)
-                .collect(Collectors.toList());
-        List<Tag> createdTags = tagDao.readAll();
-        saveNewTags(requestTags, createdTags);
         certificateDao.update(certificateDto.toEntity());
     }
 
@@ -106,7 +89,6 @@ public class CertificateServiceImpl implements CertificateService {
             certificateDto.setCreateDate(oldCertificate.getCreateDate());
 
         return certificateDto;
-
     }
 
     @Override
@@ -130,38 +112,6 @@ public class CertificateServiceImpl implements CertificateService {
         return certificates.stream()
                 .map(Certificate::toDto)
                 .collect(Collectors.toList());
-    }
-
-    public void addTagsToDb(Certificate certificate) {
-        if (certificate == null) {
-            throw new IncorrectParameterException("Null parameter in add tags to DB");
-        }
-        List<Tag> tags = certificate.getTags();
-        if (tags != null) {
-            for (Tag tag : tags) {
-                Optional<Tag> existedTag = tagDao.readByName(tag.getName());
-                int tagId = existedTag.map(Tag::getId).orElseGet(() -> tagDao.create(tag).getId());
-                certificateDao.addTag(tagId, certificate.getId());
-            }
-        }
-    }
-
-    private void saveNewTags(List<Tag> requestTags, List<Tag> createdTags) {
-        if (requestTags == null) {
-            throw new IncorrectParameterException("Null parameter save new tags to DB");
-        }
-        for (Tag requestTag : requestTags) {
-            boolean isExist = false;
-            for (Tag createdTag : createdTags) {
-                if (Objects.equals(requestTag.getName(), createdTag.getName())) {
-                    isExist = true;
-                    break;
-                }
-            }
-            if (!isExist) {
-                tagDao.create(requestTag);
-            }
-        }
     }
 
     @Override

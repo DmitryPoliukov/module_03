@@ -153,6 +153,8 @@ public class CertificateDaoImpl implements CertificateDao {
         return tagList;
     }
 
+
+
     @Override
     public void addTag(int tagId, int certificateId) {
         Query query =
