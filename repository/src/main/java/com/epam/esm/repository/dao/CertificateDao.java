@@ -53,23 +53,6 @@ public interface CertificateDao {
     List<Tag> readCertificateTags(int certificateId);
 
     /**
-     * Add tag.
-     *
-     * @param tagId the tag id
-     * @param certificateId the certificate id
-     */
-    void addTag(int tagId, int certificateId);
-
-    /**
-     * Remove tag int.
-     *
-     * @param tagId the tag id
-     * @param certificateId the certificate id
-     * @return the int
-     */
-    int removeTag(int tagId, int certificateId);
-
-    /**
      * Delete certificate by certificate id.
      *
      * @param certificateId the certificate id

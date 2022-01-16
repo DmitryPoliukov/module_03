@@ -12,8 +12,4 @@ public class PaginationHandlerImpl implements PaginationHandler {
         typedQuery.setFirstResult((page - 1) * size);
         typedQuery.setMaxResults(size);
     }
-
-    @Override
-    public int calculateNumberOfPages(int numberOfElements, int pageSize) {
-        return (int) Math.ceil(1.0 * numberOfElements / pageSize);    }
 }

@@ -153,26 +153,6 @@ public class CertificateDaoImpl implements CertificateDao {
         return tagList;
     }
 
-
-
-    @Override
-    public void addTag(int tagId, int certificateId) {
-        Query query =
-                entityManager
-                        .createNativeQuery(SQL_ADD_TAG)
-                        .setParameter("tag_id", tagId)
-                        .setParameter("gift_certificate_id", certificateId);
-        query.executeUpdate();
-    }
-
-    @Override
-    public int removeTag(int tagId, int certificateId) {
-        Query q = entityManager.createNativeQuery(SQL_REMOVE_TAG)
-                        .setParameter("tag_id", tagId)
-                        .setParameter("gift_certificate_id", certificateId);
-        return q.executeUpdate();
-    }
-
     @Override
     public int delete(int certificateId) {
         Query q = entityManager.createNativeQuery(SQL_DELETE_CERTIFICATE)

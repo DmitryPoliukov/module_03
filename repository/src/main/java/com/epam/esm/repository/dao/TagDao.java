@@ -34,7 +34,6 @@ public interface TagDao {
      * Delete int.
      *
      * @param id the id
-     * @return the int
      */
     void delete(int id);
 
@@ -45,8 +44,6 @@ public interface TagDao {
      * @return the optional
      */
     Optional<Tag> readByName(String name);
-
-    List<Tag> readAll();
 
     Tag readMostWidelyTagFromUserWithHighestCostOrders();
 

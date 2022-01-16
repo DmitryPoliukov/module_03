@@ -30,7 +30,6 @@ public class TagDaoImpl implements TagDao {
         this.paginationHandler = paginationHandler;
     }
 
-    private static final String SQL_READ_ALL = "SELECT id,name FROM tag";
     private static final String SQL_DELETE = "DELETE FROM tag WHERE id=:id";
 
     private static final String SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS =
@@ -77,11 +76,6 @@ public class TagDaoImpl implements TagDao {
         TypedQuery<Tag> typedQuery = entityManager.createQuery(select);
         paginationHandler.setPageToQuery(typedQuery, page, size);
         return typedQuery.getResultList();
-    }
-
-    @Override
-    public List<Tag> readAll() {
-        return entityManager.createNativeQuery(SQL_READ_ALL).getResultList();
     }
 
     @Override
