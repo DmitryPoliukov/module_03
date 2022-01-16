@@ -1,11 +1,13 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.OrderDto;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Audited
 @Table(name = "orders")
 public class Order {
 

@@ -1,6 +1,7 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.TagDto;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Audited
 @Table(name = "tag")
 public class Tag {
 

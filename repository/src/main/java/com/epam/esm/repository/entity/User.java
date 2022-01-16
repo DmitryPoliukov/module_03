@@ -1,12 +1,14 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.UserDto;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Audited
 @Table(name = "users")
 public class User {
 

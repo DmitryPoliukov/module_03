@@ -1,6 +1,7 @@
 package com.epam.esm.repository.entity;
 
 import com.epam.esm.repository.dto.CertificateDto;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@Audited
 @Table(name = "gift_certificate")
 public class Certificate {
 
