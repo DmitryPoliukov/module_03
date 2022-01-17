@@ -38,6 +38,11 @@ public class User {
         this.orders = orders;
     }
 
+    public User(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+    }
+
     public UserDto toDto() {
         UserDto userDto = new UserDto();
         userDto.setId(this.id);

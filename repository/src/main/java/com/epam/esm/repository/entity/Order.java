@@ -31,6 +31,14 @@ public class Order {
 
     public Order() {}
 
+    public Order(int id, LocalDateTime createDate, User user, Certificate certificate, double cost) {
+        this.id = id;
+        this.createDate = createDate;
+        this.user = user;
+        this.certificate = certificate;
+        this.cost = cost;
+    }
+
     public int getId() {
         return id;
     }
