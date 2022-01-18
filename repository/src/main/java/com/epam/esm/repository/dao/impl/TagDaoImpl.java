@@ -47,7 +47,7 @@ public class TagDaoImpl implements TagDao {
                     + "WHERE user_id="
                     + SQL_REQUEST_FOR_USER_ID_WITH_HIGHEST_COST_ORDERS
                     + " GROUP BY tag.name "
-                    + "ORDER BY count(tag.name) desc limit 1;";
+                    + "ORDER BY count(tag.name) desc limit 1";
 
     @Override
     public Tag create(Tag tag) {

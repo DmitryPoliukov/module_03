@@ -7,7 +7,6 @@ import com.epam.esm.repository.dto.OrderDto;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.User;
-import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.exception.IncorrectParameterException;
 import com.epam.esm.service.exception.ResourceException;
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.time.LocalDateTime.now;
-
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
@@ -28,14 +25,12 @@ public class OrderServiceImpl implements OrderService {
     private final UserDao userDao;
     private final OrderDao orderDao;
     private final CertificateDao certificateDao;
-    private final CertificateService certificateService;
 
     public OrderServiceImpl(
-            UserDao userDao, OrderDao orderDao, CertificateDao certificateDao, CertificateService certificateService) {
+            UserDao userDao, OrderDao orderDao, CertificateDao certificateDao) {
         this.userDao = userDao;
         this.orderDao = orderDao;
         this.certificateDao = certificateDao;
-        this.certificateService = certificateService;
     }
 
     @Override
