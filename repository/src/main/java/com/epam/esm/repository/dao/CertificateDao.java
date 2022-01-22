@@ -78,11 +78,9 @@ public interface CertificateDao {
      * Read certificates by some tags (AND conditions)
      *
      * @param tags
-     * @param page
-     * @param size
      * @return
      */
-    List<Certificate> readBySomeTags(List<String> tags, int page, int size);
+    List<Integer> readCertificateIdByTags(List<Integer> tags);
 
 
 

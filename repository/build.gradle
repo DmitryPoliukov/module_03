@@ -31,9 +31,6 @@ dependencies {
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
 
-
-
-
 }
 
 dependencyManagement {

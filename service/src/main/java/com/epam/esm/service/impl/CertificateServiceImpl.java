@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.repository.dao.CertificateDao;
+import com.epam.esm.repository.dao.TagDao;
 import com.epam.esm.repository.dto.CertificateDto;
 import com.epam.esm.repository.entity.Certificate;
 import com.epam.esm.service.CertificateService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,9 +24,11 @@ public class CertificateServiceImpl implements CertificateService {
 
     public static final int ONE_UPDATED_ROW = 1;
     private final CertificateDao certificateDao;
+    private final TagDao tagDao;
 
-    public CertificateServiceImpl(CertificateDao certificateDao) {
+    public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao) {
         this.certificateDao = certificateDao;
+        this.tagDao = tagDao;
     }
 
     @Override
@@ -119,7 +123,17 @@ public class CertificateServiceImpl implements CertificateService {
         if (tagsName == null) {
             throw new IncorrectParameterException("Null parameter in read certificate by some tags");
         }
-        return certificateDao.readBySomeTags(tagsName, page, size).stream()
+
+        List<Integer> tagsId = new ArrayList<>();
+        tagsName.forEach(tagName -> tagsId.add(tagDao.readByName(tagName).get().getId()));
+
+        List<Certificate> certificates = new ArrayList<>();
+        certificateDao.readCertificateIdByTags(tagsId).forEach(certificateId -> certificates.add(certificateDao.read(certificateId).get()));
+
+        int firstResult = (page - 1) * size;
+        int maxResult = Math.min(firstResult + size, certificates.size()-1);
+
+        return certificates.subList(firstResult, maxResult + 1).stream()
                 .map(Certificate::toDto)
                 .collect(Collectors.toList());
     }
