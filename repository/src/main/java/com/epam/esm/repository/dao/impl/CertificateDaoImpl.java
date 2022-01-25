@@ -38,17 +38,17 @@ public class CertificateDaoImpl implements CertificateDao {
     private static final String SQL_DELETE_BONDING_TAGS_BY_CERTIFICATE_ID =
             "DELETE FROM gift_certificate_m2m_tag WHERE gift_certificate_id = :id";
 
-    private static final String SQL_CERTIFICATES_BY_TAGS = "SELECT m2m.gift_certificate_id FROM gift_certificate_m2m_tag m2m " +
-    "WHERE m2m.gift_certificate_id in (select m2m.gift_certificate_id from gift_certificate_m2m_tag m2m " +
-                                    "where m2m.tag_id in (:tags) " +
-    "group by m2m.gift_certificate_id " +
-    "having count(m2m.tag_id) = :size) group by m2m.gift_certificate_id";
+    private static final String CERTIFICATES_BY_TAG_NAMES = "Select gc From Certificate as gc JOIN gc.tags as t " +
+            "WHERE t.name in (:tags) GROUP BY gc.id HAVING count(gc.id) = (:size) ";
 
-    public List<Integer> readCertificateIdByTags(List<Integer> tagsId) {
-        Query q = entityManager.createNativeQuery(SQL_CERTIFICATES_BY_TAGS)
-                .setParameter("tags", tagsId)
-                .setParameter("size", tagsId.size());
-        return q.getResultList();
+    public List<Certificate> readCertificatesByTagNames(List<String> tagNames, int page, int size) {
+        Query q = entityManager.createQuery(CERTIFICATES_BY_TAG_NAMES)
+                .setParameter("tags", tagNames)
+                .setParameter("size", tagNames.size());
+        List<Certificate> certificates = q.getResultList();
+        int firstResult = (page - 1) * size;
+        int maxResult = Math.min(firstResult + size, certificates.size()-1);
+        return certificates.subList(firstResult, maxResult + 1);
      }
 
     @Override

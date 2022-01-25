@@ -80,7 +80,7 @@ public interface CertificateDao {
      * @param tags
      * @return
      */
-    List<Integer> readCertificateIdByTags(List<Integer> tags);
+    List<Certificate> readCertificatesByTagNames(List<String> tags, int page, int size);
 
 
 
