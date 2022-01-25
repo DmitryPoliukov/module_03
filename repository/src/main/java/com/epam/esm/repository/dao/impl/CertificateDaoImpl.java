@@ -44,7 +44,7 @@ public class CertificateDaoImpl implements CertificateDao {
     public List<Certificate> readCertificatesByTagNames(List<String> tagNames, int page, int size) {
         Query q = entityManager.createQuery(CERTIFICATES_BY_TAG_NAMES)
                 .setParameter("tags", tagNames)
-                .setParameter("size", tagNames.size());
+                .setParameter("size", (long) tagNames.size());
         List<Certificate> certificates = q.getResultList();
         int firstResult = (page - 1) * size;
         int maxResult = Math.min(firstResult + size, certificates.size()-1);
